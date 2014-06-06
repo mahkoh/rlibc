@@ -7,7 +7,7 @@
 
 pub mod internal;
 
-mod types;
+pub mod types;
 
 pub mod libc;
 pub mod syscalls;

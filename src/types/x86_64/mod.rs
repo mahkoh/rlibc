@@ -1,6 +1,7 @@
 pub use self::types::*;
 
 pub type char_t   = i8;
+pub type uchar_t  = u8;
 pub type short_t  = i16;
 pub type ushort_t = u16;
 pub type int_t    = i32;
@@ -16,7 +17,5 @@ pub type uintmax_t = ulong_t;
 
 #[cfg(target_os = "linux")]
 #[cfg(target_os = "android")]
-mod types {
-    pub use self::linux;
-    mod linux;
-}
+#[path = "linux.rs"]
+mod types;
