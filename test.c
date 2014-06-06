@@ -5,9 +5,11 @@ int sys_read(int, char *, unsigned long);
 int sys_fork(void);
 int unlink(const char *);
 extern int errno;
+int remove(const char *);
+int rename(const char *, const char *);
+unsigned long strlen(const char *);
 
 int main(void)
 {
-	unlink("TESTFILE");
-	return errno;
+	return strlen("huhu");
 }
