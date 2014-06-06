@@ -2,7 +2,7 @@ pub use self::arch::*;
 
 #[cfg(target_arch = "x86_64")]
 #[path = "x86_64.rs"]
-pub mod arch;
+mod arch;
 
 pub type __kernel_key_t       = int_t;
 pub type __kernel_long_t      = long_t;
