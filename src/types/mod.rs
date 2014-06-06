@@ -1,5 +1,6 @@
 pub use self::types::*;
 
-#[cfg(target_arch = "x86_64")]
-#[path = "x86_64/mod.rs"]
+#[cfg(target_os = "linux")]
+#[cfg(target_os = "android")]
+#[path = "linux/mod.rs"]
 mod types;
