@@ -9,7 +9,15 @@ int remove(const char *);
 int rename(const char *, const char *);
 unsigned long strlen(const char *);
 
+typedef unsigned long size_t;
+
+char *strerror(int);
+size_t strlen(const char *);
+int puts(const char *);
+int memcmp2(const void *, const void *, size_t);
+
+
 int main(void)
 {
-	return strlen("huhu");
+	return memcmp2("bbb", "aaa", 3);
 }

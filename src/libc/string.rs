@@ -1,9 +1,10 @@
-use types::{uchar_t, int_t, size_t};
-use internal::{offset, offset_mut, Repr};
+use rust::prelude::*;
+
+use types::{uchar_t, char_t, int_t, size_t};
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn memcpy(dst: *mut uchar_t, src: *uchar_t, n: size_t) -> *mut uchar_t {
+pub unsafe extern fn memcpy(dst: *mut char_t, src: *char_t, n: size_t) -> *mut char_t {
     let mut i = 0;
     while i < n as int {
         *offset_mut(dst, i) = *offset(src, i);
@@ -14,8 +15,7 @@ pub unsafe extern fn memcpy(dst: *mut uchar_t, src: *uchar_t, n: size_t) -> *mut
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn memmove(dst: *mut uchar_t, src: *uchar_t,
-                             n: size_t) -> *mut uchar_t {
+pub unsafe extern fn memmove(dst: *mut char_t, src: *char_t, n: size_t) -> *mut char_t {
     if (dst as uint) < (src as uint) {
         return memcpy(dst, src, n);
     }
@@ -29,7 +29,7 @@ pub unsafe extern fn memmove(dst: *mut uchar_t, src: *uchar_t,
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strcpy(dst: *mut uchar_t, src: *uchar_t) -> *mut uchar_t {
+pub unsafe extern fn strcpy(dst: *mut char_t, src: *char_t) -> *mut char_t {
     let mut i = 0;
     while *offset(src, i) != 0 {
         *offset_mut(dst, i) = *offset(src, i);
@@ -41,8 +41,7 @@ pub unsafe extern fn strcpy(dst: *mut uchar_t, src: *uchar_t) -> *mut uchar_t {
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strncpy(dst: *mut uchar_t, src: *uchar_t,
-                             n: size_t) -> *mut uchar_t {
+pub unsafe extern fn strncpy(dst: *mut char_t, src: *char_t, n: size_t) -> *mut char_t {
     let n = n as int;
     let mut i = 0;
     while i < n && *offset(src, i) != 0 {
@@ -58,7 +57,7 @@ pub unsafe extern fn strncpy(dst: *mut uchar_t, src: *uchar_t,
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strcat(dst: *mut uchar_t, src: *uchar_t) -> *mut uchar_t {
+pub unsafe extern fn strcat(dst: *mut char_t, src: *char_t) -> *mut char_t {
     let base = strlen(dst as *_) as int;
     let mut i = 0;
     while *offset(src, i) != 0 {
@@ -71,8 +70,7 @@ pub unsafe extern fn strcat(dst: *mut uchar_t, src: *uchar_t) -> *mut uchar_t {
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strncat(dst: *mut uchar_t, src: *uchar_t,
-                             n: size_t) -> *mut uchar_t {
+pub unsafe extern fn strncat(dst: *mut char_t, src: *char_t, n: size_t) -> *mut char_t {
     let base = strlen(dst as *_) as int;
     let mut i = 0;
     while i < n as int && *offset(src, i) != 0 {
@@ -83,10 +81,11 @@ pub unsafe extern fn strncat(dst: *mut uchar_t, src: *uchar_t,
     dst
 }
 
-
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn memcmp(m1: *uchar_t, m2: *uchar_t, n: size_t) -> int_t {
+pub unsafe extern fn memcmp(m1: *char_t, m2: *char_t, n: size_t) -> int_t {
+    let m1 = m1 as *uchar_t;
+    let m2 = m2 as *uchar_t;
     let mut i = 0;
     while i < n as int {
         let v1 = *offset(m1, i) as int;
@@ -103,7 +102,24 @@ pub unsafe extern fn memcmp(m1: *uchar_t, m2: *uchar_t, n: size_t) -> int_t {
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strcmp(m1: *uchar_t, m2: *uchar_t) -> int_t {
+pub unsafe extern fn memcmp2(m1: *char_t, m2: *char_t, n: size_t) -> int_t {
+    let m1 = (m1 as *uchar_t).to_slice(n as uint);
+    let m2 = (m2 as *uchar_t).to_slice(n as uint);
+    for (v1, v2) in m1.iter().zip(m2.iter()) {
+        match *v1 as int - *v2 as int {
+            j if j < 0 => return -1,
+            j if j > 0 => return 1,
+            _ => { },
+        }
+    }
+    0
+}
+
+#[no_mangle]
+#[no_split_stack]
+pub unsafe extern fn strcmp(m1: *char_t, m2: *char_t) -> int_t {
+    let m1 = m1 as *uchar_t;
+    let m2 = m2 as *uchar_t;
     let mut i = 0;
     loop {
         let v1 = *offset(m1, i) as int;
@@ -123,13 +139,15 @@ pub unsafe extern fn strcmp(m1: *uchar_t, m2: *uchar_t) -> int_t {
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strcoll(m1: *uchar_t, m2: *uchar_t) -> int_t {
+pub unsafe extern fn strcoll(m1: *char_t, m2: *char_t) -> int_t {
     strcmp(m1, m2)
 }
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strncmp(m1: *uchar_t, m2: *uchar_t, n: size_t) -> int_t {
+pub unsafe extern fn strncmp(m1: *char_t, m2: *char_t, n: size_t) -> int_t {
+    let m1 = m1 as *uchar_t;
+    let m2 = m2 as *uchar_t;
     let mut i = 0;
     while i < n as int {
         let v1 = *offset(m1, i) as int;
@@ -149,7 +167,7 @@ pub unsafe extern fn strncmp(m1: *uchar_t, m2: *uchar_t, n: size_t) -> int_t {
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strxfrm(dst: *mut uchar_t, src: *uchar_t, n: size_t) -> size_t {
+pub unsafe extern fn strxfrm(dst: *mut char_t, src: *char_t, n: size_t) -> size_t {
     let len = strlen(src);
     if len < n {
         memcpy(dst, src, len+1);
@@ -159,8 +177,8 @@ pub unsafe extern fn strxfrm(dst: *mut uchar_t, src: *uchar_t, n: size_t) -> siz
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn memchr(s: *uchar_t, c: int_t, n: size_t) -> *uchar_t {
-    let c = c as uchar_t;
+pub unsafe extern fn memchr(s: *char_t, c: int_t, n: size_t) -> *char_t {
+    let c = c as char_t;
     let mut i = 0;
     while i < n as int {
         if *offset(s, i) == c {
@@ -168,16 +186,16 @@ pub unsafe extern fn memchr(s: *uchar_t, c: int_t, n: size_t) -> *uchar_t {
         }
         i += 1;
     }
-    0 as *uchar_t
+    0 as *char_t
 }
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strchr(s: *uchar_t, c: int_t) -> *uchar_t {
+pub unsafe extern fn strchr(s: *char_t, c: int_t) -> *char_t {
     if c == 0 {
         return offset(s, strlen(s) as int);
     }
-    let c = c as uchar_t;
+    let c = c as char_t;
     let mut i = 0;
     while *offset(s, i) != 0 {
         if *offset(s, i) == c {
@@ -185,12 +203,12 @@ pub unsafe extern fn strchr(s: *uchar_t, c: int_t) -> *uchar_t {
         }
         i += 1;
     }
-    0 as *uchar_t
+    0 as *char_t
 }
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strcspn(s1: *uchar_t, s2: *uchar_t) -> size_t {
+pub unsafe extern fn strcspn(s1: *char_t, s2: *char_t) -> size_t {
     let len = strlen(s2);
     let mut i = 0;
     while *offset(s1, i) != 0 {
@@ -204,7 +222,7 @@ pub unsafe extern fn strcspn(s1: *uchar_t, s2: *uchar_t) -> size_t {
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strpbrk(s1: *uchar_t, s2: *uchar_t) -> *uchar_t {
+pub unsafe extern fn strpbrk(s1: *char_t, s2: *char_t) -> *char_t {
     let len = strlen(s2);
     let mut i = 0;
     while *offset(s1, i) != 0 {
@@ -213,12 +231,12 @@ pub unsafe extern fn strpbrk(s1: *uchar_t, s2: *uchar_t) -> *uchar_t {
         }
         i += 1;
     }
-    0 as *uchar_t
+    0 as *char_t
 }
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strrchr(s: *uchar_t, c: int_t) -> *uchar_t {
+pub unsafe extern fn strrchr(s: *char_t, c: int_t) -> *char_t {
     let mut last = -1;
     let mut i = 0;
     while *offset(s, i) != 0 {
@@ -228,14 +246,14 @@ pub unsafe extern fn strrchr(s: *uchar_t, c: int_t) -> *uchar_t {
         i += 1;
     }
     match last {
-        -1 => 0 as *uchar_t,
+        -1 => 0 as *char_t,
         _  => offset(s, last)
     }
 }
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strspn(s1: *uchar_t, s2: *uchar_t) -> size_t {
+pub unsafe extern fn strspn(s1: *char_t, s2: *char_t) -> size_t {
     let len = strlen(s2);
     let mut i = 0;
     while *offset(s1, i) != 0 {
@@ -249,7 +267,7 @@ pub unsafe extern fn strspn(s1: *uchar_t, s2: *uchar_t) -> size_t {
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strstr(s1: *uchar_t, s2: *uchar_t) -> *uchar_t {
+pub unsafe extern fn strstr(s1: *char_t, s2: *char_t) -> *char_t {
     let len1 = strlen(s1) as int;
     let len2 = strlen(s2) as int;
     let mut i = 0;
@@ -259,20 +277,20 @@ pub unsafe extern fn strstr(s1: *uchar_t, s2: *uchar_t) -> *uchar_t {
         }
         i += 1;
     }
-    0 as *uchar_t
+    0 as *char_t
 }
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strtok(s1: *mut uchar_t, s2: *uchar_t) -> *uchar_t {
-    static mut ss: *mut uchar_t = 0 as *mut uchar_t;
+pub unsafe extern fn strtok(s1: *mut char_t, s2: *char_t) -> *char_t {
+    static mut ss: *mut char_t = 0 as *mut char_t;
     static mut len: int = 0;
     if s1 as uint != 0 {
         ss = s1;
         len = strlen(ss as *_) as int;
     }
     if ss as uint == 0 {
-        return 0 as *uchar_t;
+        return 0 as *char_t;
     }
     let len2 = strlen(s2) as int;
     let mut i = 0;
@@ -285,8 +303,8 @@ pub unsafe extern fn strtok(s1: *mut uchar_t, s2: *uchar_t) -> *uchar_t {
     ss = offset_mut(ss, i);
     len -= i;
     if len == 0 {
-        ss = 0 as *mut uchar_t;
-        return 0 as *uchar_t;
+        ss = 0 as *mut char_t;
+        return 0 as *char_t;
     }
     let mut i = 0;
     while i < len {
@@ -298,7 +316,7 @@ pub unsafe extern fn strtok(s1: *mut uchar_t, s2: *uchar_t) -> *uchar_t {
     if i == len {
         len = 0;
         let tmp = ss;
-        ss = 0 as *mut uchar_t;
+        ss = 0 as *mut char_t;
         return tmp as *_;
     }
     *offset_mut(ss, i) = 0;
@@ -310,8 +328,8 @@ pub unsafe extern fn strtok(s1: *mut uchar_t, s2: *uchar_t) -> *uchar_t {
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn memset(dst: *mut uchar_t, c: int_t, n: size_t) -> *mut uchar_t {
-    let c = c as uchar_t;
+pub unsafe extern fn memset(dst: *mut char_t, c: int_t, n: size_t) -> *mut char_t {
+    let c = c as char_t;
     let mut i = 0;
     while i < n as int {
         *offset_mut(dst, i) = c;
@@ -322,14 +340,13 @@ pub unsafe extern fn memset(dst: *mut uchar_t, c: int_t, n: size_t) -> *mut ucha
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strerror(num: int_t) -> *uchar_t {
-    let s = bytes!("u w0t m8?", 0);
-    s.repr().data
+pub unsafe extern fn strerror(_: int_t) -> *char_t {
+    cs!("u w0t m8?")
 }
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn strlen(s: *uchar_t) -> size_t {
+pub unsafe extern fn strlen(s: *char_t) -> size_t {
     let mut len = 0;
     while *offset(s, len) != 0 {
         len += 1;

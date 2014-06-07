@@ -7,9 +7,11 @@
 #![allow(dead_code)]
 #![feature(asm, globs, macro_rules)]
 
-pub mod internal;
+pub use rust::x86_64::linux::start::_start;
 
-pub mod types;
+mod rust;
+
+mod types;
 
 pub mod libc;
 pub mod posix;

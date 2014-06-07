@@ -1,10 +1,13 @@
-use types::{int_t, char_t};
+use rust::prelude::*;
+
+use types::{int_t, char_t, size_t};
 
 use libc::errno::{errno, EISDIR};
+use libc::string::{strlen};
 
 use posix::unistd::{unlink, rmdir};
 
-use syscalls::{sys_rename};
+use syscalls::{sys_rename, sys_write};
 
 static _IOFBF: int_t = 0;
 static _IOLBF: int_t = 1;
@@ -62,6 +65,11 @@ pub unsafe extern fn rename(old: *char_t, new: *char_t) -> int_t {
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn tmpfile() -> *mut FILE {
-    0 as *mut FILE
+pub unsafe extern fn puts(s: *char_t) -> int_t {
+    let len = strlen(s);
+    if sys_write(1, s, len) as size_t != len || sys_write(1, cs!("\n"), 1) != 1 {
+        -1
+    } else {
+        0
+    }
 }
