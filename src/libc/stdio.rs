@@ -2,7 +2,9 @@ use rust::prelude::*;
 
 use types::{int_t, char_t, size_t};
 
-use libc::errno::{errno, EISDIR};
+use consts::errno::{EISDIR, EEXIST};
+
+use libc::errno::{errno};
 use libc::string::{strlen};
 
 use posix::unistd::{unlink, rmdir};

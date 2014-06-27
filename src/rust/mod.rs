@@ -2,18 +2,28 @@
 
 use syscalls::{sys_exit};
 
+pub mod macros;
+
 #[cfg(target_arch = "x86_64")]
 pub mod x86_64;
 
 pub mod slice;
 pub mod iter;
 pub mod option;
+pub mod lang;
+pub mod clone;
+pub mod num;
+pub mod rand;
 
 pub mod prelude {
-    pub use super::slice::{ImmutableSlice, Items, ToSlice};
-    pub use super::iter::{Iterator, Zip};
+    pub use super::slice::{ImmutableSlice, Items, ToSlice, ToMutSlice};
+    pub use super::iter::{Iterator, Zip, range, loop_from, DoubleEndedIterator};
     pub use super::option::{Option, Some, None};
-    pub use super::{Repr, offset, offset_mut};
+    pub use super::{Repr, offset, offset_mut, uninit};
+    pub use super::lang::*;
+    pub use super::clone::{Clone};
+    pub use super::num::{One};
+    pub use super::rand::{Rand, os_rand};
 }
 
 extern "rust-intrinsic" {
@@ -24,11 +34,8 @@ extern "rust-intrinsic" {
     pub fn copy_nonoverlapping_memory<T>(dst: *mut T, src: *T, count: uint);
 }
 
-#[lang = "sized"]
-pub trait Sized { }
-
-#[no_split_stack]
 #[inline(always)]
+#[no_split_stack]
 pub unsafe fn offset_mut<T>(dst: *mut T, n: int) -> *mut T {
     offset(dst as *T, n) as *mut T
 }
@@ -46,13 +53,6 @@ pub trait Repr<T> {
     #[no_split_stack]
     fn repr(&self) -> T {
         unsafe { transmute_copy(self) }
-    }
-}
-
-#[macro_export]
-macro_rules! cs {
-    ($e:expr) => {
-        (bytes!($e, 0)).repr().data as *char_t
     }
 }
 

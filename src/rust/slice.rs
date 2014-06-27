@@ -9,7 +9,13 @@ pub struct Slice<T> {
     pub len: uint,
 }
 
+pub struct MutSlice<T> {
+    pub data: *mut T,
+    pub len: uint,
+}
+
 impl<'a, T> Repr<Slice<T>> for &'a [T] { }
+impl<'a, T> Repr<MutSlice<T>> for &'a mut [T] { }
 
 pub trait ToSlice<T> {
     fn to_slice(self, len: uint) -> &[T];
@@ -31,12 +37,35 @@ impl<T> ToSlice<T> for *T {
     }
 }
 
+pub trait ToMutSlice<T> {
+    fn to_mut_slice(self, len: uint) -> &mut [T];
+}
+
+impl<T> ToMutSlice<T> for *mut T {
+    #[inline]
+    #[no_split_stack]
+    fn to_mut_slice(self, len: uint) -> &mut [T] {
+        new_mut_slice(self, len)
+    }
+}
+
 #[inline]
 #[no_split_stack]
 fn new_slice<T>(p: *T, len: uint) -> &[T] {
     unsafe { 
         transmute(Slice {
             data: p,
+            len: len
+        })
+    }
+}
+
+#[inline]
+#[no_split_stack]
+fn new_mut_slice<T>(p: *mut T, len: uint) -> &mut [T] {
+    unsafe { 
+        transmute(Slice {
+            data: p as *T,
             len: len
         })
     }
