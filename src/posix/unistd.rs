@@ -16,13 +16,13 @@ macro_rules! forward {
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn unlink(file: *char_t) -> int_t {
+pub unsafe extern fn unlink(file: *const char_t) -> int_t {
     forward!(sys_unlink, file)
 }
 
 #[no_mangle]
 #[no_split_stack]
-pub unsafe extern fn rmdir(file: *char_t) -> int_t {
+pub unsafe extern fn rmdir(file: *const char_t) -> int_t {
     forward!(sys_rmdir, file)
 }
 

@@ -2,8 +2,9 @@ use types::{int_t, size_t, char_t};
 
 use consts::fcntl::{O_RDONLY};
 
-use rust::{size_of, Repr};
-use rust::lang::*;
+use core::raw::Repr;
+use core::intrinsics::size_of;
+use core::ops::Drop;
 
 use posix::unistd::{close, read};
 use posix::fcntl::{open};

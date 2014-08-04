@@ -7,6 +7,8 @@
 #![allow(dead_code)]
 #![feature(asm, globs, macro_rules, lang_items, intrinsics)]
 
+extern crate core;
+
 pub use rust::x86_64::linux::start::_start;
 
 mod rust;

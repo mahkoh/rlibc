@@ -172,9 +172,9 @@ pub struct rusage {
 }
 
 pub struct kexec_segment {
-    pub buf: *void_t,
+    pub buf: *const void_t,
     pub bufsz: size_t,
-    pub mem: *void_t,
+    pub mem: *const void_t,
     pub memsz: size_t,
 }
 
