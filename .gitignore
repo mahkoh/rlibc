@@ -1,2 +1,4 @@
 /target
 /Cargo.lock
+/config.mk
+/libcore/libcore

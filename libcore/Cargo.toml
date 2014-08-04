@@ -1,0 +1,9 @@
+[package]
+
+name = "core"
+version = "0.11.0"
+authors = ["various"]
+
+[[lib]]
+name = "core"
+path = "libcore/lib.rs"

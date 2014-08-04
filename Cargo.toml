@@ -6,3 +6,6 @@ authors = ["mahkoh", "alexchandel"]
 
 [[lib]]
 name = "rlibc"
+
+[dependencies.core]
+path = "./libcore"
