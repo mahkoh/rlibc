@@ -14,10 +14,10 @@ typedef unsigned long size_t;
 char *strerror(int);
 size_t strlen(const char *);
 int puts(const char *);
-int memcmp2(const void *, const void *, size_t);
+int memcmp(const void *, const void *, size_t);
 
 
 int main(void)
 {
-	return memcmp2("bbb", "aaa", 3);
+	return memcmp("bbb", "aaa", 3);
 }
