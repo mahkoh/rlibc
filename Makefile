@@ -1,9 +1,7 @@
 -include ./config.mk
 
 ARCH		   ?= x86_64
-# TARGET		   ?= x86_64-unknown-linux
-TARGET		   ?= x86_64-apple-darwin
-
+TARGET		   ?= x86_64-unknown-linux
 RUST_ROOT	   ?= /usr/local
 LLVM_ROOT	   ?= /usr
 BINUTILS_ROOT  ?= /usr
@@ -20,7 +18,7 @@ RUSTC           = $(RUST_ROOT)/bin/rustc
 RUSTCFLAGS		= --target $(TARGET) -O -Z no-landing-pads --out-dir $(TARGETDIR)
 CLANGFLAGS		= -target $(TARGET) -nostdlib
 
-.PHONY: all run clean
+.PHONY: all directories run clean
 
 # Depend on librlibc.a so that cargo will create targets
 all: directories $(TARGETDIR)/test

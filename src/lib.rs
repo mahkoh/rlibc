@@ -28,10 +28,10 @@ pub mod syscalls;
 
 // WARNING hacks
 #[lang = "stack_exhausted"] extern fn stack_exhausted() {
-	unsafe {syscalls::sys_exit(-1);}
+	unsafe {syscalls::sys_exit(1);}
 }
 #[lang = "eh_personality"] extern fn eh_personality() {
-	unsafe {syscalls::sys_exit(-1);}
+	unsafe {syscalls::sys_exit(1);}
 }
 #[lang = "begin_unwind"]
 unsafe extern "C" fn begin_unwind(
@@ -39,7 +39,7 @@ unsafe extern "C" fn begin_unwind(
 		_file: &str,
 		_line: uint
 	) -> ! {
-	syscalls::sys_exit(-1);
+	syscalls::sys_exit(1);
     loop { }; // for divergence check
 }
 #[no_mangle]

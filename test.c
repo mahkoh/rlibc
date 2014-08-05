@@ -19,5 +19,6 @@ int memcmp(const void *, const void *, size_t);
 
 int main(void)
 {
+	puts("Hello, world!");
 	return memcmp("bbb", "aaa", 3);
 }
