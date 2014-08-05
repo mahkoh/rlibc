@@ -6,15 +6,15 @@ TARGET		   ?= x86_64-apple-darwin
 
 RUST_ROOT	   ?= /usr/local
 LLVM_ROOT	   ?= /usr
-GCC_ROOT	   ?= /usr
+BINUTILS_ROOT  ?= /usr
 
 BDIR			= target
 TARGETDIR       = $(BDIR)/$(TARGET)
 MORESTACK		= morestack/$(ARCH)/morestack.S
 
-LD				= $(GCC_ROOT)/bin/ld
+LD				= $(BINUTILS_ROOT)/bin/ld
 CLANG			= $(LLVM_ROOT)/bin/clang
-RUSTC          ?= $(RUST_ROOT)/bin/rustc
+RUSTC           = $(RUST_ROOT)/bin/rustc
 
 # add -L $(TARGETDIR)/deps for non-native platforms
 RUSTCFLAGS		= --target $(TARGET) -O -Z no-landing-pads --out-dir $(TARGETDIR)
@@ -29,27 +29,20 @@ directories:
 	mkdir -p $(BDIR)
 	mkdir -p $(TARGETDIR)
 
-$(TARGETDIR)/morestack.o: $(MORESTACK)
-	$(CLANG) $(CLANGFLAGS) -c $< -o $@
-
 $(TARGETDIR)/libcore.rlib: libcore/lib.rs
 	$(RUSTC) $(RUSTCFLAGS) $<
 
-$(TARGETDIR)/rlibc.o: src/lib.rs $(TARGETDIR)/libcore.rlib $(TARGETDIR)/morestack.o
+$(TARGETDIR)/rlibc.o: src/lib.rs $(TARGETDIR)/libcore.rlib
 	$(RUSTC) $(RUSTCFLAGS) src/lib.rs --emit=obj -L $(TARGETDIR) --extern core=$(TARGETDIR)/libcore.rlib
-
-# $(TARGETDIR)/rlibc.o: $(TARGETDIR)/librlibc.rlib $(TARGETDIR)/deps/morestack.a
-# 	$(RUSTC) $(RUSTCFLAGS) --out-dir $(TARGETDIR) src/lib.rs
-
 
 $(TARGETDIR)/test.o: test.c
 	$(CLANG) $(CLANGFLAGS) -c $< -o $@
 
 $(TARGETDIR)/test: $(TARGETDIR)/rlibc.o $(TARGETDIR)/test.o
-	$(CLANG) $(CLANGFLAGS) -e _start $^ -o $@
+	$(LD) -e _start $^ -o $@
 
 run: all
 	$(TARGETDIR)/test
 
 clean:
-	$(CARGOCLEAN)
+	rm -r $(BDIR)
