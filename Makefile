@@ -42,5 +42,5 @@ $(TARGETDIR)/test: $(TARGETDIR)/rlibc.o $(TARGETDIR)/test.o
 run: all
 	$(TARGETDIR)/test
 
-clean:
+clean: directories
 	rm -r $(BDIR)

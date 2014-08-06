@@ -2,3 +2,5 @@
 /Cargo.lock
 /config.mk
 /libcore
+/doc
+doc.json
