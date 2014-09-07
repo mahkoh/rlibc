@@ -1,7 +1,5 @@
 #![macro_escape]
 
-use syscalls::{sys_exit};
-
 pub mod macros;
 
 #[cfg(target_arch = "x86_64")]
@@ -34,29 +32,3 @@ pub mod prelude {
         u
     }
 }
-
-// extern "rust-intrinsic" {
-//     pub fn size_of<T>() -> uint;
-//     pub fn offset<T>(dst: *const T, n: int) -> *const T;
-//     pub fn transmute<T,U>(e: T) -> U;
-//     pub fn uninit<T>() -> T;
-//     pub fn copy_nonoverlapping_memory<T>(dst: *mut T, src: *const T, count: uint);
-// }
-
-
-// pub trait Repr<T> {
-//     #[inline]
-//     #[no_split_stack]
-//     fn repr(&self) -> T {
-//         unsafe { transmute_copy(self) }
-//     }
-// }
-
-// #[cold]
-// #[lang = "fail_bounds_check"]
-// #[no_split_stack]
-// #[inline(never)]
-// fn fail_bounds_check(_: &'static str, _: uint, _: uint, _: uint) -> ! {
-//     unsafe { sys_exit(134); }
-//     loop { }
-// }
