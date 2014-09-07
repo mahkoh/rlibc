@@ -10,7 +10,7 @@ pub mod x86_64;
 pub mod rand;
 
 pub mod prelude {
-    pub use core::slice::{ImmutableVector, Items, Vector, MutableVector};
+    pub use core::slice::{ImmutableSlice, Items, Slice, MutableSlice};
     pub use core::iter::{Iterator, Zip, range, count, DoubleEndedIterator};
     pub use core::option::{Option, Some, None};
     pub use core::raw::{Repr};
