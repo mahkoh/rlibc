@@ -10,6 +10,6 @@ macro_rules! cc {
 #[macro_export]
 macro_rules! cs {
     ($e:expr) => {
-        (bytes!($e, 0)).repr().data as *const char_t
+        (concat!($e, "\0")).repr().data as *const char_t
     }
 }
