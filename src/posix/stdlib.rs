@@ -2,8 +2,56 @@ use rust::prelude::*;
 use types::{char_t, int_t};
 use libc::string::{strlen};
 use libc::errno::{errno};
+use consts::NULL;
 use consts::errno::{EINVAL, EEXIST};
 use posix::fcntl::{open};
+
+use core::slice::raw::buf_as_slice;
+use core::mem::transmute;
+
+pub static mut ARGV: &'static [*const u8] = &[];
+pub static mut ENVP: &'static [*const u8] = &[];
+
+
+#[no_mangle]
+#[no_split_stack]
+pub unsafe extern fn crt0(argc: int, argv: *const *const u8) {
+    ARGV = buf_as_slice(
+        argv,
+        argc as uint,
+        |r: &[*const u8]| -> &'static [*const u8] {transmute(r)}
+    );
+
+    let envp: *const *const u8 = offset(argv, argc+1);
+    let mut envc = 0i;
+    while (*offset(envp, envc) as uint != 0u) {
+        envc += 1;
+    }
+
+    ENVP = buf_as_slice(
+        envp,
+        envc as uint,
+        |r: &[*const u8]| -> &'static [*const u8] {transmute(r)}
+    );
+}
+
+#[no_mangle]
+#[no_split_stack]
+pub unsafe extern fn getarg(index: int_t) -> *const char_t {
+    match ARGV.get(index as uint) {
+        Some(arg) => *arg as *const char_t,
+        None => NULL as *const char_t
+    }
+}
+
+#[no_mangle]
+#[no_split_stack]
+pub unsafe extern fn getenv(index: int_t) -> *const char_t {
+    match ENVP.get(index as uint) {
+        Some(env) => *env as *const char_t,
+        None => NULL as *const char_t
+    }
+}
 
 /*
 #[no_mangle]
