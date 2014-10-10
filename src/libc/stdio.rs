@@ -41,7 +41,6 @@ pub static mut __stdout: FILE = FILE { fd: 1 };
 pub static mut __stderr: FILE = FILE { fd: 2 };
 
 #[no_mangle]
-#[no_split_stack]
 pub unsafe extern fn remove(file: *const char_t) -> int_t {
     if unlink(file) == -1 {
         match errno {
@@ -54,7 +53,6 @@ pub unsafe extern fn remove(file: *const char_t) -> int_t {
 }
 
 #[no_mangle]
-#[no_split_stack]
 pub unsafe extern fn rename(old: *const char_t, new: *const char_t) -> int_t {
     match sys_rename(old, new) {
         n if n < 0 => {
@@ -66,7 +64,6 @@ pub unsafe extern fn rename(old: *const char_t, new: *const char_t) -> int_t {
 }
 
 #[no_mangle]
-#[no_split_stack]
 pub unsafe extern fn puts(s: *const char_t) -> int_t {
     let len = strlen(s);
     if sys_write(1, s, len) as size_t != len || sys_write(1, cs!("\n"), 1) != 1 {
