@@ -123,16 +123,24 @@ macro_rules! syscall {
 }
 
 // UNIX / BSD system calls:
+// assert sizeof(*mut) == user_addr_t
 syscall!(2, 000, sys_nosys)
 syscall!(2, 001, sys_exit, int_t) // -> void
 syscall!(2, 002, sys_fork)
-syscall!(2, 003, sys_read, uint_t, *mut char_t, size_t) // sizeof(*mut) == 8
+syscall!(2, 003, sys_read, uint_t, *mut char_t, size_t)
 syscall!(2, 004, sys_write, uint_t, *const char_t, size_t) // uint_t/int_t ???
 syscall!(2, 005, sys_open, *const char_t, int_t, int_t)
 syscall!(2, 006, sys_close, uint_t)
 
 syscall!(2, 010, sys_unlink, *const char_t)
 
+syscall!(2, 116, sys_gettimeofday, *mut timeval, *mut timezone)
+
 syscall!(2, 128, sys_rename, *const char_t, *const char_t)
 
 syscall!(2, 137, sys_rmdir, *const char_t)
+
+syscall!(2, 153, sys_pread, int_t, *mut char_t, size_t, off_t)
+syscall!(2, 154, sys_pwrite, int_t, *const char_t, size_t, off_t)
+
+syscall!(2, 199, sys_lseek, int_t, off_t, int_t)
