@@ -47,7 +47,3 @@ unsafe extern "C" fn begin_unwind(
 	syscalls::sys_exit(1);
     loop { }; // for divergence check
 }
-#[no_mangle]
-pub extern "C" fn __morestack() {
-	stack_exhausted();
-}

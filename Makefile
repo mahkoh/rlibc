@@ -15,7 +15,7 @@ CLANG			= $(LLVM_ROOT)/bin/clang
 RUSTC           = $(RUST_ROOT)/bin/rustc
 
 # add -L $(TARGETDIR)/deps for non-native platforms
-RUSTCFLAGS		= --target $(TARGET) -O -Z no-landing-pads --out-dir $(TARGETDIR)
+RUSTCFLAGS		= --target $(TARGET) -O -Z no-landing-pads -C no-stack-check --out-dir $(TARGETDIR)
 CLANGFLAGS		= -target $(TARGET) -nostdlib
 
 .PHONY: all directories run clean
