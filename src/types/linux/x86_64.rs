@@ -15,6 +15,32 @@ pub type size_t    = ulong_t;
 pub type ptrdiff_t = long_t;
 
 // stdint
+pub type int8_t = char_t;
+pub type int16_t = short_t;
+pub type int32_t = int_t;
+pub type int64_t = longlong_t;
+pub type uint8_t = uchar_t;
+pub type uint16_t = ushort_t;
+pub type uint32_t = uint_t;
+pub type uint64_t = ulonglong_t;
+pub type int_least8_t = int8_t;
+pub type int_least16_t = int16_t;
+pub type int_least32_t = int32_t;
+pub type int_least64_t = int64_t;
+pub type uint_least8_t = uint8_t;
+pub type uint_least16_t = uint16_t;
+pub type uint_least32_t = uint32_t;
+pub type uint_least64_t = uint64_t;
+pub type int_fast8_t = int8_t;
+pub type int_fast16_t = int16_t;
+pub type int_fast32_t = int32_t;
+pub type int_fast64_t = int64_t;
+pub type uint_fast8_t = uint8_t;
+pub type uint_fast16_t = uint16_t;
+pub type uint_fast32_t = uint32_t;
+pub type uint_fast64_t = uint64_t;
+pub type intptr_t = long_t;
+pub type uintptr_t = ulong_t;
 pub type intmax_t  = long_t;
 pub type uintmax_t = ulong_t;
 
@@ -28,8 +54,9 @@ pub type __kernel_size_t    = ulong_t;
 pub type __kernel_ssize_t   = long_t;
 pub type __kernel_ptrdiff_t = long_t;
 
+pub const NSIG_BPW: uint = 64;
 #[no_mangle]
-pub static _NSIG_BPW: uint = 64;
+pub static _NSIG_BPW: uint = NSIG_BPW;
 
 #[packed]
 pub struct epoll_event {
@@ -129,11 +156,13 @@ pub struct msg {
 
 pub type __statfs_word = long_t;
 
+pub const FD_SETSIZE: uint = 1024;
+
 #[no_mangle]
-pub static __FD_SETSIZE: uint = 1024;
+pub static __FD_SETSIZE: uint = FD_SETSIZE;
 pub struct __kernel_fd_set {
     // XXX size_of
-    pub fds_bits: [ulong_t, ..(__FD_SETSIZE / (8 * 8))],
+    pub fds_bits: [ulong_t, ..(FD_SETSIZE / (8 * 8))],
 }
 
 pub struct getcpu_cache {

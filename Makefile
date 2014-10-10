@@ -2,7 +2,7 @@
 
 ARCH		   ?= x86_64
 TARGET		   ?= x86_64-unknown-linux
-RUST_ROOT	   ?= /usr/local
+RUST_ROOT	   ?= /usr
 LLVM_ROOT	   ?= /usr
 BINUTILS_ROOT  ?= /usr
 

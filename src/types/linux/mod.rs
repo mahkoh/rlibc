@@ -112,13 +112,16 @@ pub struct timespec {
     pub tv_nsec: long_t,
 }
 
+pub const NSIG: uint = 64;
 #[no_mangle]
-pub static _NSIG: uint = 64;
+pub static _NSIG: uint = NSIG;
+
+pub const NSIG_WORDS: uint = NSIG / NSIG_BPW;
 #[no_mangle]
-pub static _NSIG_WORDS: uint = _NSIG / _NSIG_BPW;
+pub static _NSIG_WORDS: uint = NSIG_WORDS;
 
 pub struct sigset_t {
-    pub sig: [ulong_t, .._NSIG_WORDS],
+    pub sig: [ulong_t, ..NSIG_WORDS],
 }
 
 pub type sa_family_t = __kernel_sa_family_t;
