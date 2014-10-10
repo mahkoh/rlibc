@@ -24,9 +24,9 @@ use types::*;
  * call = class << 24 & class_mask | id & !class_mask
  */
 
-static CLASS_SHIFT: uint = 24;
-static CLASS_MASK: int_t = 0xFF << CLASS_SHIFT;
-static NUMBER_MASK: int_t = !CLASS_MASK;
+const CLASS_SHIFT: uint = 24;
+const CLASS_MASK: int_t = 0xFF << CLASS_SHIFT;
+const NUMBER_MASK: int_t = !CLASS_MASK;
 
 macro_rules! syscall {
     ($class:expr, $id:expr, $name:ident) => {

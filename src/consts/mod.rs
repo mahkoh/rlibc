@@ -1,6 +1,6 @@
-use types::int_t;
+use types::intptr_t;
 
 pub mod errno;
 pub mod fcntl;
 
-pub static NULL: int_t = 0;
+pub const NULL: intptr_t = 0;
