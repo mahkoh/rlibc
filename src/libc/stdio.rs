@@ -29,7 +29,7 @@ static SEEK_END: int_t = 2;
 
 static TMP_MAX: int_t = 238328;
 
-struct FILE {
+pub struct FILE {
     fd: int_t,
 }
 
