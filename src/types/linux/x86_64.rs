@@ -7,10 +7,14 @@ pub type uint_t     = u32;
 pub type long_t     = i64;
 pub type longlong_t = i64;
 pub type ulong_t    = u64;
+pub type ulonglong_t= i64;
 
-pub type ssize_t = long_t;
-pub type size_t  = ulong_t;
+// stddef
+pub type ssize_t   = long_t;
+pub type size_t    = ulong_t;
+pub type ptrdiff_t = long_t;
 
+// stdint
 pub type intmax_t  = long_t;
 pub type uintmax_t = ulong_t;
 
