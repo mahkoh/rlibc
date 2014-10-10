@@ -9,12 +9,12 @@
 
 extern crate core;
 
-#[cfg(target_os = "linux", target_arch = "x86_64")]
-#[cfg(target_os = "android", target_arch = "x86_64")]
+#[cfg(any(all(target_os = "linux", target_arch = "x86_64"),
+		  all(target_os = "android", target_arch = "x86_64")))]
 pub use rust::x86_64::linux::start::_start;
 
-#[cfg(target_os = "macos", target_arch = "x86_64")]
-#[cfg(target_os = "ios", target_arch = "x86_64")]
+#[cfg(any(all(target_os = "macos", target_arch = "x86_64"),
+		  all(target_os = "ios", target_arch = "x86_64")))]
 pub use rust::x86_64::macos::start::start;
 
 mod rust;
