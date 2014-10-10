@@ -33,6 +33,11 @@ pub mod syscalls;
 #[lang = "eh_personality"] extern fn eh_personality() {
 	unsafe {syscalls::sys_exit(1);}
 }
+#[lang = "fail_fmt"]
+unsafe fn fail_fmt() -> ! {
+	syscalls::sys_exit(1);
+	loop { };
+}
 #[lang = "begin_unwind"]
 unsafe extern "C" fn begin_unwind(
 		_fmt: &core::fmt::Arguments,
