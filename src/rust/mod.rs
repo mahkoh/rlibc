@@ -19,12 +19,10 @@ pub mod prelude {
     pub use super::rand::{Rand, os_rand};
 
     #[inline(always)]
-    #[no_split_stack]
     pub unsafe fn offset_mut<T>(dst: *mut T, n: int) -> *mut T {
         offset(dst as *const T, n) as *mut T
     }
 
-    #[no_split_stack]
     pub unsafe fn transmute_copy<T,U>(p: &T) -> U {
         let p = p as *const T as *const U;
         let mut u = uninit();

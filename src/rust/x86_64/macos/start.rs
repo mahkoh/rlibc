@@ -1,5 +1,4 @@
 #[no_mangle]
-#[no_split_stack]
 pub unsafe extern fn start() {
 	// THIS IS AUTO-INSERTED BY COMPILER:
 	// pushq	%rbp

@@ -14,7 +14,6 @@ pub static mut ENVP: &'static [*const u8] = &[];
 
 
 #[no_mangle]
-#[no_split_stack]
 pub unsafe extern fn crt0(argc: int, argv: *const *const u8) {
     ARGV = buf_as_slice(
         argv,
@@ -36,7 +35,6 @@ pub unsafe extern fn crt0(argc: int, argv: *const *const u8) {
 }
 
 #[no_mangle]
-#[no_split_stack]
 pub unsafe extern fn getarg(index: int_t) -> *const char_t {
     match ARGV.get(index as uint) {
         Some(arg) => *arg as *const char_t,
@@ -45,7 +43,6 @@ pub unsafe extern fn getarg(index: int_t) -> *const char_t {
 }
 
 #[no_mangle]
-#[no_split_stack]
 pub unsafe extern fn getenv(index: int_t) -> *const char_t {
     match ENVP.get(index as uint) {
         Some(env) => *env as *const char_t,
@@ -55,7 +52,6 @@ pub unsafe extern fn getenv(index: int_t) -> *const char_t {
 
 /*
 #[no_mangle]
-#[no_split_stack]
 pub unsafe extern fn mkstemp(tplt: *mut char_t) -> int_t {
     let slc = tplt.to_mut_slice(strlen(tplt as *_) as uint);
     if slc.len() < 6 || slc.lastn(6).iter().any(|c| *c != cc!('X')) {

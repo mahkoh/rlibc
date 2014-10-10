@@ -1,5 +1,4 @@
 #[no_mangle]
-#[no_split_stack]
 pub unsafe extern fn _start() {
     asm!("pop   %rdi");
     asm!("mov   %rsp,%rsi");

@@ -3,7 +3,6 @@ use syscalls::{sys_open};
 use libc::errno::{errno};
 
 #[no_mangle]
-#[no_split_stack]
 pub unsafe extern fn open(path: *const char_t, flags: int_t, mode: mode_t) -> int_t {
     /*
     match sys_open(path, flags, mode) {

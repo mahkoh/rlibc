@@ -20,7 +20,6 @@ impl FD {
 }
 
 impl Drop for FD {
-    #[no_split_stack]
     fn drop(&mut self) {
         unsafe {
             close(self.fd);
@@ -37,7 +36,6 @@ pub struct OSRand {
 }
 
 impl Rand for OSRand {
-    #[no_split_stack]
     fn fill<T>(&self, dst: &mut [T]) {
         let raw = dst.repr();
         unsafe {

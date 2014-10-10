@@ -4,7 +4,6 @@ macro_rules! syscall {
     ($id:expr, $name:ident) => {
         #[inline(always)]
         #[no_mangle]
-        #[no_split_stack]
         pub unsafe extern fn $name() -> int_t {
             let mut ret: int_t = $id;
             asm!("syscall" :
@@ -18,7 +17,6 @@ macro_rules! syscall {
     ($id:expr, $name:ident, $a:ty) => {
         #[inline(always)]
         #[no_mangle]
-        #[no_split_stack]
         pub unsafe extern fn $name(a: $a) -> int_t {
             let mut ret: int_t = $id;
             asm!("syscall" :
@@ -32,7 +30,6 @@ macro_rules! syscall {
     ($id:expr, $name:ident, $a:ty, $b:ty) => {
         #[inline(always)]
         #[no_mangle]
-        #[no_split_stack]
         pub unsafe extern fn $name(a: $a, b: $b) -> int_t {
             let mut ret: int_t = $id;
             asm!("syscall" :
@@ -46,7 +43,6 @@ macro_rules! syscall {
     ($id:expr, $name:ident, $a:ty, $b:ty, $c:ty) => {
         #[inline(always)]
         #[no_mangle]
-        #[no_split_stack]
         pub unsafe extern fn $name(a: $a, b: $b, c: $c) -> int_t {
             let mut ret: int_t = $id;
             asm!("syscall" :
@@ -60,7 +56,6 @@ macro_rules! syscall {
     ($id:expr, $name:ident, $a:ty, $b:ty, $c:ty, $d:ty) => {
         #[inline(always)]
         #[no_mangle]
-        #[no_split_stack]
         pub unsafe extern fn $name(a: $a, b: $b, c: $c, d: $d) -> int_t {
             let mut ret: int_t = $id;
             asm!("syscall" :
@@ -74,7 +69,6 @@ macro_rules! syscall {
     ($id:expr, $name:ident, $a:ty, $b:ty, $c:ty, $d:ty, $e:ty) => {
         #[inline(always)]
         #[no_mangle]
-        #[no_split_stack]
         pub unsafe extern fn $name(a: $a, b: $b, c: $c, d: $d, e: $e) -> int_t {
             let mut ret: int_t = $id;
             asm!("syscall" :
@@ -88,7 +82,6 @@ macro_rules! syscall {
     ($id:expr, $name:ident, $a:ty, $b:ty, $c:ty, $d:ty, $e:ty, $f:ty) => {
         #[inline(always)]
         #[no_mangle]
-        #[no_split_stack]
         pub unsafe extern fn $name(a: $a, b: $b, c: $c, d: $d, e: $e, f:$f) -> int_t {
             let mut ret: int_t = $id;
             asm!("syscall" :
