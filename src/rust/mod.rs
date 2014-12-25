@@ -8,14 +8,14 @@ pub mod x86_64;
 pub mod rand;
 
 pub mod prelude {
-    pub use core::slice::{ImmutableSlice, Items, MutableSlice};
-    pub use core::iter::{Iterator, Zip, range, count, DoubleEndedIterator};
-    pub use core::option::{Option, Some, None};
+    pub use core::slice::{SliceExt};
+    pub use core::iter::{Iterator, IteratorExt, Zip, range, count, DoubleEndedIterator, DoubleEndedIteratorExt};
+    pub use core::option::Option::{mod, Some, None};
     pub use core::raw::{Repr};
     pub use core::intrinsics::{offset, uninit, copy_nonoverlapping_memory};
     pub use core::ops::*;
     pub use core::clone::{Clone};
-    pub use core::num::{One};
+    pub use core::num::{One, Float};
     pub use super::rand::{Rand, os_rand};
 
     #[inline(always)]
