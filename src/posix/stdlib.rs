@@ -8,6 +8,7 @@ use posix::fcntl::{open};
 
 use core::slice::raw::buf_as_slice;
 use core::mem::transmute;
+use syscalls::{sys_exit};
 
 pub static mut ARGV: &'static [*const u8] = &[];
 pub static mut ENVP: &'static [*const u8] = &[];
@@ -48,6 +49,17 @@ pub unsafe extern fn getenv(index: int_t) -> *const char_t {
         Some(env) => *env as *const char_t,
         None => NULL as *const char_t
     }
+}
+
+#[no_mangle]
+pub fn exit(x: int_t) -> ! {
+    _Exit(x);
+}
+
+#[no_mangle]
+pub fn _Exit(x: int_t) -> ! {
+    unsafe {sys_exit(1);}
+    loop { }; // for divergence check
 }
 
 /*
