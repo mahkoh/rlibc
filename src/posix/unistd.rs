@@ -1,5 +1,5 @@
 use types::{char_t, int_t, void_t, size_t, ssize_t, off_t, uint_t, ulong_t};
-use syscalls::{sys_unlink, sys_rmdir, sys_read, sys_close, sys_lseek};
+use syscalls::{sys_unlink, sys_rmdir, sys_read, sys_write, sys_close, sys_lseek};
 
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 use syscalls::{sys_pread64, sys_pwrite64};
@@ -39,6 +39,11 @@ pub unsafe extern fn close(fd: int_t) -> int_t {
 #[no_mangle]
 pub unsafe extern fn read(fd: int_t, buf: *mut void_t, count: size_t) -> ssize_t {
     (forward!(sys_read, fd as uint_t, buf as *mut char_t, count)) as ssize_t
+}
+
+#[no_mangle]
+pub unsafe extern fn write(fd: int_t, buf: *const void_t, count: size_t) -> ssize_t {
+    (forward!(sys_write, fd as uint_t, buf as *const char_t, count)) as ssize_t
 }
 
 #[no_mangle]
