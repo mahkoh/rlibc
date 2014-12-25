@@ -33,8 +33,8 @@ pub mod syscalls;
 #[lang = "eh_personality"] extern fn eh_personality() {
 	unsafe {syscalls::sys_exit(1);}
 }
-#[lang = "fail_fmt"]
-unsafe fn fail_fmt() -> ! {
+#[lang = "panic_fmt"]
+unsafe fn panic_fmt() -> ! {
 	syscalls::sys_exit(1);
 	loop { };
 }
