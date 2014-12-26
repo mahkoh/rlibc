@@ -23,3 +23,7 @@ pub fn dlclose(handle: *const void_t) -> int_t {
 	exit(1);
 }
 
+#[no_mangle]
+pub fn dladdr(addr: *const void_t, info: *const void_t) -> int_t {
+	exit(1);
+}
