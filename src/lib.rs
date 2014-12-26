@@ -24,6 +24,7 @@ mod consts;
 
 pub mod libc;
 pub mod posix;
+pub mod math;
 pub mod syscalls;
 
 // WARNING hacks
