@@ -39,12 +39,3 @@ unsafe fn panic_fmt() -> ! {
 	syscalls::sys_exit(1);
 	loop { };
 }
-#[lang = "begin_unwind"]
-unsafe extern "C" fn begin_unwind(
-		_fmt: &core::fmt::Arguments,
-		_file: &str,
-		_line: uint
-	) -> ! {
-	syscalls::sys_exit(1);
-    loop { }; // for divergence check
-}
