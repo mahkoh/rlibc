@@ -2,7 +2,7 @@
 //! this needs unit tests
 //! some of the assembly could be rewritten in Rust
 
-use types::size_t;
+use types::{size_t, int_t};
 use rust::prelude::*;
 
 type f128 = f64;
@@ -35,7 +35,33 @@ const tab2: &'static [[f64; 32]] = &[
 const tab3: &'static [f64] = &[ 1., -1., 3., -15., 105., -945., 10395., -135135.0 ];
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
+pub fn ldexp(x: f64, exp: int_t) -> f64 {
+	let ret: f64;
+	unsafe { asm!{
+	"	fildl $2
+		flds $1
+		fscale
+	" : "={st}"(ret) : "m"(x), "m"(exp) :: "volatile"
+	}};
+	ret
+}
+
+#[no_mangle]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
+pub fn ldexpf(x: f32, exp: int_t) -> f32 {
+	let ret: f32;
+	unsafe { asm!{
+	"	fildl $2
+		flds $1
+		fscale
+	" : "={st}"(ret) : "m"(x), "m"(exp) :: "volatile"
+	}};
+	ret
+}
+
+#[no_mangle]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn floorf(x: f32) -> f32
 {
 	let ret: f32;
@@ -61,7 +87,7 @@ pub fn floorf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn floor(x: f64) -> f64
 {
 	let ret: f64;
@@ -87,7 +113,7 @@ pub fn floor(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn ceilf(x: f32) -> f32
 {
 	let ret: f32;
@@ -113,7 +139,7 @@ pub fn ceilf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn ceil(x: f64) -> f64
 {
 	let ret: f64;
@@ -139,7 +165,7 @@ pub fn ceil(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn truncf(x: f32) -> f32
 {
 	let ret: f32;
@@ -165,7 +191,7 @@ pub fn truncf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn trunc(x: f64) -> f64
 {
 	let ret: f64;
@@ -213,7 +239,7 @@ pub fn round(x: f64) -> f64
 
 /// x * y +z
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn fmaf(x: f32, y: f32, z: f32) -> f32
 {
 	let ret: f32;
@@ -227,7 +253,7 @@ pub fn fmaf(x: f32, y: f32, z: f32) -> f32
 
 /// x * y + z
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn fma(x: f64, y: f64, z: f64) -> f64
 {
 	let ret: f64;
@@ -241,7 +267,7 @@ pub fn fma(x: f64, y: f64, z: f64) -> f64
 
 /// y % x
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn fmodf(x: f32, y: f32) -> f32
 {
 	let ret: f32;
@@ -260,7 +286,7 @@ pub fn fmodf(x: f32, y: f32) -> f32
 
 /// y % x
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn fmod(x: f64, y: f64) -> f64
 {
 	let ret: f64;
@@ -279,7 +305,7 @@ pub fn fmod(x: f64, y: f64) -> f64
 
 /// max(x-y,0)
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn fdimf(x: f32, y: f32) -> f32
 {
 	let ret: f32;
@@ -297,7 +323,7 @@ pub fn fdimf(x: f32, y: f32) -> f32
 
 /// max(x-y,0)
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn fdim(x: f64, y: f64) -> f64
 {
 	let ret: f64;
@@ -376,7 +402,7 @@ pub fn fmin(x: f64, y: f64) -> f64
 /* Roots */
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn sqrtf(x: f32) -> f32
 {
 	let ret: f32;
@@ -387,7 +413,7 @@ pub fn sqrtf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn sqrt(x: f64) -> f64
 {
 	let ret: f64;
@@ -398,7 +424,7 @@ pub fn sqrt(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn cbrtf(x: f32) -> f32
 {
 	unsafe { asm!{
@@ -441,7 +467,7 @@ pub fn cbrtf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn cbrt(x: f64) -> f64
 {
 	unsafe { asm!{
@@ -498,7 +524,7 @@ pub fn hypot(x: f64, y: f64) -> f64
 /* Logarithms */
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn logf(x: f32) -> f32
 {
 	let ret: f32;
@@ -511,7 +537,7 @@ pub fn logf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn log(x: f64) -> f64
 {
 	let ret: f64;
@@ -524,7 +550,7 @@ pub fn log(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn log2f(x: f32) -> f32
 {
 	let ret: f32;
@@ -537,7 +563,7 @@ pub fn log2f(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn log2(x: f64) -> f64
 {
 	let ret: f64;
@@ -550,7 +576,7 @@ pub fn log2(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn log10f(x: f32) -> f32
 {
 	let ret: f32;
@@ -563,7 +589,7 @@ pub fn log10f(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn log10(x: f64) -> f64
 {
 	let ret: f64;
@@ -576,7 +602,7 @@ pub fn log10(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn log1pf(x: f32) -> f32
 {
 	let ret: f32;
@@ -606,7 +632,7 @@ pub fn log1pf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn log1p(x: f64) -> f64
 {
 	let ret: f64;
@@ -638,7 +664,7 @@ pub fn log1p(x: f64) -> f64
 /* Exponentials */
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn expf(x: f32) -> f32
 {
 	let ret: f32;
@@ -658,7 +684,7 @@ pub fn expf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn exp(x: f64) -> f64
 {
 	let ret: f64;
@@ -678,7 +704,7 @@ pub fn exp(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn exp2f(x: f32) -> f32
 {
 	let ret: f32;
@@ -697,7 +723,7 @@ pub fn exp2f(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn exp2(x: f64) -> f64
 {
 	let ret: f64;
@@ -716,7 +742,7 @@ pub fn exp2(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn expm1f(x: f32) -> f32
 {
 	let ret: f32;
@@ -756,7 +782,7 @@ pub fn expm1f(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn expm1(x: f64) -> f64
 {
 	let ret: f64;
@@ -896,7 +922,7 @@ pub fn pow(mant: f64, expo: f64) -> f64
 /* Trigonometric functions */
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn sinf(x: f32) -> f32
 {
 	let ret: f32;
@@ -921,7 +947,7 @@ pub fn sinf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn sin(x: f64) -> f64
 {
 	let ret: f64;
@@ -946,7 +972,7 @@ pub fn sin(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn cosf(x: f32) -> f32
 {
 	let ret: f32;
@@ -971,7 +997,7 @@ pub fn cosf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn cos(x: f64) -> f64
 {
 	let ret: f64;
@@ -996,7 +1022,7 @@ pub fn cos(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn tanf(x: f32) -> f32
 {
 	let ret: f32;
@@ -1023,7 +1049,7 @@ pub fn tanf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn tan(x: f64) -> f64
 {
 	let ret: f64;
@@ -1050,7 +1076,7 @@ pub fn tan(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn asinf(x: f32) -> f32
 {
 	let ret: f32;
@@ -1067,7 +1093,7 @@ pub fn asinf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn asin(x: f64) -> f64
 {
 	let ret: f64;
@@ -1084,7 +1110,7 @@ pub fn asin(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn acosf(x: f32) -> f32
 {
 	let ret: f32;
@@ -1102,7 +1128,7 @@ pub fn acosf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn acos(x: f64) -> f64
 {
 	let ret: f64;
@@ -1120,7 +1146,7 @@ pub fn acos(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn atanf(x: f32) -> f32
 {
 	let ret: f32;
@@ -1133,7 +1159,7 @@ pub fn atanf(x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn atan(x: f64) -> f64
 {
 	let ret: f64;
@@ -1147,7 +1173,7 @@ pub fn atan(x: f64) -> f64
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn atan2f(y: f32, x: f32) -> f32
 {
 	let ret: f32;
@@ -1160,7 +1186,7 @@ pub fn atan2f(y: f32, x: f32) -> f32
 }
 
 #[no_mangle]
-#[or(target_arch = "i386", target_arch = "x86_64")]
+#[cfg(any(target_arch = "i386", target_arch = "x86_64"))]
 pub fn atan2(y: f64, x: f64) -> f64
 {
 	let ret: f64;
