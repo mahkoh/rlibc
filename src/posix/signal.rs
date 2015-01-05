@@ -32,6 +32,24 @@ macro_rules! forward {
     };
 }
 
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+pub mod Signals {
+	use types::{int_t,};
+
+	/// Signal Interrupt: Interactive attention signal.
+	pub const SIGINT: int_t = 2;
+	/// Signal Illegal Instruction: Invalid function image.
+	pub const SIGILL: int_t = 4;
+	/// Signal Abort: Abnormal termination.
+	pub const SIGABRT: int_t = 6;
+	/// Signal Floating-Point Exception: Erroneous arithmetic operation.
+	pub const SIGFPE: int_t = 8;
+	/// Signal Segmentation Violation: Invalid access to memory storage.
+	pub const SIGSEGV: int_t = 11;
+	/// Signal Terminate: Termination request sent to program.
+	pub const SIGTERM: int_t = 15;
+}
+
 #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
 pub mod Signals {
 	use types::{int_t,};

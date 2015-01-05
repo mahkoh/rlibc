@@ -21,7 +21,7 @@ pub type __kernel_old_uid32_t = __kernel_uid_t;
 pub type __kernel_old_gid32_t = __kernel_gid_t;
 pub type __kernel_old_dev_t   = uint_t;
 pub struct __kernel_fsid_t {
-    pub val: [int_t; ..2],
+    pub val: [int_t; 2],
 }
 pub type __kernel_off_t       = __kernel_long_t;
 pub type __kernel_loff_t      = longlong_t;
@@ -88,7 +88,7 @@ pub struct timex {
 
     pub tai: int_t, /* TAI offset (ro) */
 
-    pub _____padding: [i32; ..11],
+    pub _____padding: [i32; 11],
 }
 
 pub struct timeval {
@@ -99,7 +99,7 @@ pub struct timeval {
 pub struct file_handle {
     pub handle_bytes: u32,
     pub handle_type: int_t,
-    pub f_handle: [uchar_t; ..0],
+    pub f_handle: [uchar_t; 0],
 }
 
 pub struct rlimit64 {
@@ -121,14 +121,14 @@ pub const NSIG_WORDS: uint = NSIG / NSIG_BPW;
 pub static _NSIG_WORDS: uint = NSIG_WORDS;
 
 pub struct sigset_t {
-    pub sig: [ulong_t; ..NSIG_WORDS],
+    pub sig: [ulong_t; NSIG_WORDS],
 }
 
 pub type sa_family_t = __kernel_sa_family_t;
 
 pub struct sockaddr {
     pub sa_family: sa_family_t,
-    pub sa_data: [char_t; ..14],
+    pub sa_data: [char_t; 14],
 }
 
 pub struct itimerspec {
@@ -186,7 +186,7 @@ pub struct mq_attr {
     pub mq_maxmsg: long_t,
     pub mq_msgsize: long_t,
     pub mq_curmsgs: long_t,
-    pub __reserved: [long_t; ..4],
+    pub __reserved: [long_t; 4],
 }
 
 pub type mqd_t = __kernel_mqd_t;
@@ -203,7 +203,7 @@ pub struct linux_dirent64 {
     pub d_off: i64,
     pub d_reclen: ushort_t,
     pub d_type: uchar_t,
-    pub d_name: [char_t; ..0],
+    pub d_name: [char_t; 0],
 }
 
 pub struct io_event {
@@ -234,7 +234,7 @@ pub struct __sysctl_args {
     pub oldlenp: *mut size_t,
     pub newval: *mut void_t,
     pub newlen: size_t,
-    pub __unused: [ulong_t; ..4],
+    pub __unused: [ulong_t; 4],
 }
 
 pub struct sched_param {
@@ -253,14 +253,14 @@ pub struct statfs {
     pub f_namelen: __statfs_word,
     pub f_frsize: __statfs_word,
     pub f_flags: __statfs_word,
-    pub f_spare: [__statfs_word; ..4],
+    pub f_spare: [__statfs_word; 4],
 }
 
 pub struct ustat {
     pub f_tfree: __kernel_daddr_t,
     pub f_tinode: __kernel_ino_t,
-    pub f_fname: [char_t; ..6],
-    pub f_fpack: [char_t; ..6],
+    pub f_fname: [char_t; 6],
+    pub f_fpack: [char_t; 6],
 }
 
 pub struct utimbuf {
@@ -272,7 +272,7 @@ pub struct linux_dirent {
     pub d_ino: ulong_t,
     pub d_off: ulong_t,
     pub d_reclen: ushort_t,
-    pub d_name: [char_t; ..1],
+    pub d_name: [char_t; 1],
 }
 
 pub struct msqid_ds {
@@ -293,17 +293,17 @@ pub struct msqid_ds {
 
 pub struct msgbuf {
     pub mtype: __kernel_long_t,
-    pub mtext: [char_t; ..1],
+    pub mtext: [char_t; 1],
 }
 
 pub type key_t = __kernel_key_t;
 
 pub struct old_utsname {
-    pub sysname: [char_t; ..65],
-    pub nodename: [char_t; ..65],
-    pub release: [char_t; ..65],
-    pub version: [char_t; ..65],
-    pub machine: [char_t; ..65],
+    pub sysname: [char_t; 65],
+    pub nodename: [char_t; 65],
+    pub release: [char_t; 65],
+    pub version: [char_t; 65],
+    pub machine: [char_t; 65],
 }
 
 pub type off_t = __kernel_off_t;

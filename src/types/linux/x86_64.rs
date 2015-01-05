@@ -84,7 +84,7 @@ pub struct stat {
     pub st_mtime_nsec: ulong_t,
     pub st_ctime:      ulong_t,
     pub st_ctime_nsec: ulong_t,
-    pub __unused: [long_t; ..3],
+    pub __unused: [long_t; 3],
 }
 
 pub struct iocb {
@@ -162,17 +162,17 @@ pub const FD_SETSIZE: uint = 1024;
 pub static __FD_SETSIZE: uint = FD_SETSIZE;
 pub struct __kernel_fd_set {
     // XXX size_of
-    pub fds_bits: [ulong_t; ..(FD_SETSIZE / (8 * 8))],
+    pub fds_bits: [ulong_t; (FD_SETSIZE / (8 * 8))],
 }
 
 pub struct getcpu_cache {
     // XXX size_of
-    pub blob: [ulong_t; ..128/8],
+    pub blob: [ulong_t; 128/8],
 }
 
 pub struct sysinfo {
     pub uptime: long_t,
-    pub loads: [ulong_t; ..3],
+    pub loads: [ulong_t; 3],
     pub totalram: ulong_t,
     pub freeram: ulong_t,
     pub sharedram: ulong_t,
@@ -185,5 +185,21 @@ pub struct sysinfo {
     pub freehigh: ulong_t,
     pub mem_unit: u32,
     // XXX size_of
-    pub _f: [char_t; ..20-2*8-4],
+    pub _f: [char_t; 20-2*8-4],
 }
+
+#[repr(C)]
+pub struct tm {
+    pub tm_sec: int_t,
+    pub tm_min: int_t,
+    pub tm_hour: int_t,
+    pub tm_mday: int_t,
+    pub tm_mon: int_t,
+    pub tm_year: int_t,
+    pub tm_wday: int_t,
+    pub tm_yday: int_t,
+    pub tm_isdst: int_t,
+    pub tm_gmtoff: long_t,
+    pub tm_zone: *const char_t,
+}
+
