@@ -300,3 +300,12 @@ pub unsafe extern fn strlen(s: *const char_t) -> size_t {
     }
     len as size_t
 }
+
+#[no_mangle]
+pub unsafe extern fn strnlen(s: *const char_t, n: size_t) -> size_t {
+    let mut len: uint = 0;
+    while *offset(s, len as int) != 0 && len < (n as uint) {
+        len += 1;
+    }
+    len as size_t
+}
