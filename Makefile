@@ -8,7 +8,6 @@ BINUTILS_ROOT  ?= /usr
 
 BDIR			= target
 TARGETDIR       = $(BDIR)/$(TARGET)
-MORESTACK		= morestack/$(ARCH)/morestack.S
 
 LD				= $(BINUTILS_ROOT)/bin/ld
 CLANG			= $(LLVM_ROOT)/bin/clang
@@ -31,7 +30,7 @@ $(TARGETDIR)/libcore.rlib: libcore/lib.rs
 	$(RUSTC) $(RUSTCFLAGS) $<
 
 $(TARGETDIR)/rlibc.o: src/lib.rs $(TARGETDIR)/libcore.rlib
-	$(RUSTC) $(RUSTCFLAGS) src/lib.rs --emit=obj -L $(TARGETDIR) --extern core=$(TARGETDIR)/libcore.rlib
+	$(RUSTC) $(RUSTCFLAGS) src/lib.rs --emit obj -L $(TARGETDIR) --extern core=$(TARGETDIR)/libcore.rlib
 
 $(TARGETDIR)/test.o: test.c include/rlibc/libc.h
 	$(CLANG) $(CLANGFLAGS) -c $< -o $@
