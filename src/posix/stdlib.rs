@@ -50,15 +50,29 @@ pub unsafe extern fn getenv(index: int_t) -> *const char_t {
     }
 }
 
+/// Terminates the process normally, performing the regular cleanup.
+/// All C streams are closed, and all files created with tmpfile are removed.
+/// Status can be zero or EXIT_SUCCESS, or EXIT_FAILURE.
 #[no_mangle]
-pub fn exit(x: int_t) -> ! {
-    _Exit(x);
+pub extern fn exit(x: int_t) -> ! {
+    _exit(x);
 }
 
 #[no_mangle]
-pub fn _Exit(x: int_t) -> ! {
-    unsafe {sys_exit(1);}
+pub extern fn _Exit(x: int_t) -> ! {
+    unsafe {sys_exit(x);}
     loop { }; // for divergence check
+}
+
+#[no_mangle]
+pub extern fn _exit(x: int_t) -> ! {
+    unsafe {sys_exit(x);}
+    loop { }; // for divergence check
+}
+
+#[no_mangle]
+pub unsafe extern fn abort() {
+    raise(SIGABRT);
 }
 
 /*
