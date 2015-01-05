@@ -7,7 +7,6 @@ use consts::errno::{EINVAL, EEXIST};
 use posix::fcntl::{open};
 
 use core::slice::raw::buf_as_slice;
-use core::mem::transmute;
 use syscalls::{sys_exit};
 
 pub static mut ARGV: &'static [*const u8] = &[];
