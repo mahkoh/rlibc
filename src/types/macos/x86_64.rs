@@ -101,7 +101,7 @@ pub struct timezone {
 }
 #[repr(C)]
 pub struct fd_set {
-    pub fds_bits: [int32_t, ..32u],
+    pub fds_bits: [int32_t; 32u],
 }
 
 // kernel

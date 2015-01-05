@@ -24,6 +24,7 @@ mod consts;
 
 pub mod libc;
 pub mod posix;
+pub mod math;
 pub mod syscalls;
 
 // WARNING hacks
@@ -33,17 +34,8 @@ pub mod syscalls;
 #[lang = "eh_personality"] extern fn eh_personality() {
 	unsafe {syscalls::sys_exit(1);}
 }
-#[lang = "fail_fmt"]
-unsafe fn fail_fmt() -> ! {
+#[lang = "panic_fmt"]
+unsafe fn panic_fmt() -> ! {
 	syscalls::sys_exit(1);
 	loop { };
-}
-#[lang = "begin_unwind"]
-unsafe extern "C" fn begin_unwind(
-		_fmt: &core::fmt::Arguments,
-		_file: &str,
-		_line: uint
-	) -> ! {
-	syscalls::sys_exit(1);
-    loop { }; // for divergence check
 }

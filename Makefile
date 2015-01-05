@@ -1,14 +1,13 @@
 -include ./config.mk
 
 ARCH		   ?= x86_64
-TARGET		   ?= x86_64-unknown-linux
+TARGET		   ?= x86_64-unknown-linux-gnu
 RUST_ROOT	   ?= /usr
 LLVM_ROOT	   ?= /usr
 BINUTILS_ROOT  ?= /usr
 
 BDIR			= target
 TARGETDIR       = $(BDIR)/$(TARGET)
-MORESTACK		= morestack/$(ARCH)/morestack.S
 
 LD				= $(BINUTILS_ROOT)/bin/ld
 CLANG			= $(LLVM_ROOT)/bin/clang
@@ -16,7 +15,7 @@ RUSTC           = $(RUST_ROOT)/bin/rustc
 
 # add -L $(TARGETDIR)/deps for non-native platforms
 RUSTCFLAGS		= --target $(TARGET) -O -Z no-landing-pads -C no-stack-check --out-dir $(TARGETDIR)
-CLANGFLAGS		= -target $(TARGET) -nostdlib
+CLANGFLAGS		= -target $(TARGET) -I include/rlibc -nostdlib
 
 .PHONY: all directories run clean
 
@@ -31,12 +30,12 @@ $(TARGETDIR)/libcore.rlib: libcore/lib.rs
 	$(RUSTC) $(RUSTCFLAGS) $<
 
 $(TARGETDIR)/rlibc.o: src/lib.rs $(TARGETDIR)/libcore.rlib
-	$(RUSTC) $(RUSTCFLAGS) src/lib.rs --emit=obj -L $(TARGETDIR) --extern core=$(TARGETDIR)/libcore.rlib
+	$(RUSTC) $(RUSTCFLAGS) src/lib.rs --emit obj -L $(TARGETDIR) --extern core=$(TARGETDIR)/libcore.rlib
 
-$(TARGETDIR)/test.o: test.c
+$(TARGETDIR)/test.o: test.c include/rlibc/libc.h
 	$(CLANG) $(CLANGFLAGS) -c $< -o $@
 
-$(TARGETDIR)/test: $(TARGETDIR)/rlibc.o $(TARGETDIR)/test.o
+$(TARGETDIR)/test: $(TARGETDIR)/test.o $(TARGETDIR)/rlibc.o $(TARGETDIR)/libcore.rlib $(RUST_ROOT)/lib/rustlib/$(TARGET)/lib/libcompiler-rt.a
 	$(LD) -e _start $^ -o $@
 
 run: all
