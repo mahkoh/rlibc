@@ -1,3 +1,18 @@
+use types::{int_t, char_t, void_t};
+use posix::stdlib::{ARGV, ARGC, ENVP, ENVC, APPLE, exit};
+
+use rust::prelude::*;
+
+extern "C" {
+	fn main(argc: int_t,
+			argv: *const *const char_t,
+			envp: *const *const char_t,
+			apple: *const *const char_t) -> int_t;
+}
+
+/// This function is still mangled to "_start", yet the linker looks for
+/// "start". Also, Rust inserts the frame-pointer prelude, which is invalid
+/// for an executable's entry point.
 #[no_mangle]
 pub unsafe extern fn start() {
 	// THIS IS AUTO-INSERTED BY COMPILER:
@@ -7,19 +22,24 @@ pub unsafe extern fn start() {
 	// Pop nonsense %rbp value.
 	// Mark deepest frame with 0.
 	asm!("	pop   %rdi
-			push  $$0" :::: "volatile");
+		start:
+			push  $$0
+			movq  %rsp, %rbp
+			mov   +8(%rsp), $0
+			lea   +16(%rsp), $1"
+			: "=r"(ARGC), "=r"(ARGV) ::: "volatile");
 
-	// Load argc and argv as 1st & 2nd args.
-	asm!("	mov   +8(%rsp),%rdi
-    		lea   +16(%rsp),%rsi
-    		call  _crt0" :::: "volatile");
+	ENVP = offset(ARGV, ARGC as int + 1);
 
-	// Load argc and argv as 1st & 2nd args.
-	asm!("	mov   +8(%rsp),%rdi
-    		lea   +16(%rsp),%rsi
-    		call  _main" :::: "volatile");
+	let mut apple: *const *const char_t = ENVP;
+    while (*apple as uint != 0) {
+        apple = offset(apple, 1); // increases by one pointer size
+    }
+    ENVC = (apple as uint - ENVP as uint - 1);
+    apple = offset(apple, 1); // one NULL pointer separates apple[] from env[]
+    APPLE = apple;
 
-    asm!("	mov   %rax,%rdi
-    		mov   $$0x2000001,%rax
-    		syscall" :::: "volatile");
+	let status = main(ARGC as int_t, ARGV, ENVP, apple);
+
+	exit(status);
 }

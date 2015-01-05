@@ -1,53 +1,98 @@
 use rust::prelude::*;
-use types::{char_t, int_t};
-use libc::string::{strlen};
+use types::{char_t, int_t, size_t};
+use libc::string::{strlen, strncpy, strnlen, strncmp};
 use libc::errno::{errno};
 use consts::NULL;
 use consts::errno::{EINVAL, EEXIST};
 use posix::fcntl::{open};
+use posix::signal::{raise, SIGABRT};
 
-use core::slice::raw::buf_as_slice;
 use syscalls::{sys_exit};
 
-pub static mut ARGV: &'static [*const u8] = &[];
-pub static mut ENVP: &'static [*const u8] = &[];
+pub static mut ARGV: *const *const char_t = 0u as *const *const char_t;
+pub static mut ARGC: uint = 0;
+pub static mut ENVP: *const *const char_t = 0u as *const *const char_t;
+pub static mut ENVC: uint = 0;
 
+#[cfg(target_os = "macos")]
+pub static mut APPLE: *const *const char_t = 0u as *const *const char_t;
+
+const K_ENV_MAXKEYLEN: size_t = 512;
 
 #[no_mangle]
-pub unsafe extern fn crt0(argc: int, argv: *const *const u8) {
-    ARGV = buf_as_slice(
-        argv,
-        argc as uint,
-        |r: &[*const u8]| -> &'static [*const u8] {transmute(r)}
-    );
-
-    let envp: *const *const u8 = offset(argv, argc+1);
-    let mut envc = 0i;
-    while (*offset(envp, envc) as uint != 0u) {
-        envc += 1;
-    }
-
-    ENVP = buf_as_slice(
-        envp,
-        envc as uint,
-        |r: &[*const u8]| -> &'static [*const u8] {transmute(r)}
-    );
+pub unsafe extern fn get_argv() -> &'static [*const char_t] {
+    transmute(from_raw_buf(
+        &ARGV,
+        ARGC
+    ))
 }
 
 #[no_mangle]
-pub unsafe extern fn getarg(index: int_t) -> *const char_t {
-    match ARGV.get(index as uint) {
-        Some(arg) => *arg as *const char_t,
-        None => NULL as *const char_t
+pub unsafe extern fn get_envp() -> &'static [*const char_t] {
+    transmute(from_raw_buf(
+        &ENVP,
+        ENVC
+    ))
+}
+
+#[no_mangle]
+#[cfg(target_os = "macos")]
+pub unsafe extern fn _NSGetArgc() -> *const int_t {
+    (&ARGC) as *const uint as *const int_t
+}
+
+#[no_mangle]
+#[cfg(target_os = "macos")]
+pub unsafe extern fn _NSGetArgv() -> *const *const *const char_t {
+    (&ARGV) as *const *const *const char_t
+}
+
+#[no_mangle]
+#[cfg(target_os = "macos")]
+pub unsafe extern fn _NSGetEnviron() -> *const *const *const char_t {
+    (&ENVP) as *const *const *const char_t
+}
+
+#[no_mangle]
+#[cfg(target_os = "macos")]
+pub unsafe extern fn _NSGetProgname() -> *const *const char_t {
+    APPLE // apple[0] should point to the binary's path
+}
+
+#[no_mangle]
+#[cfg(target_os = "macos")]
+pub unsafe extern fn _NSGetExecutablePath(buf: *mut char_t, size: *mut u32) -> int_t {
+    let len = strlen(*APPLE);
+    if len < *size as size_t {
+        strncpy(buf, *APPLE, len);
+        0
+    } else {
+        *size = len as u32;
+        -1
     }
 }
 
 #[no_mangle]
-pub unsafe extern fn getenv(index: int_t) -> *const char_t {
-    match ENVP.get(index as uint) {
-        Some(env) => *env as *const char_t,
-        None => NULL as *const char_t
+pub unsafe extern fn getenv(key: *const char_t) -> *const char_t {
+    let len = strnlen(key, K_ENV_MAXKEYLEN);
+    for &env in get_envp().iter() {
+        if strncmp(key, env, len) == 0 && *offset(env, len as int) == '=' as i8 {
+            return offset(env, (len as int) + 1)
+        }
     }
+    0 as *const char_t
+}
+
+#[no_mangle]
+pub unsafe extern fn setenv(key: *const char_t,
+                            val: *const char_t,
+                            overwrite: int_t) -> int_t {
+    _exit(1); // TODO implement mutable environment
+}
+
+#[no_mangle]
+pub unsafe extern fn unsetenv(key: *const char_t) -> int_t {
+    _exit(1); // TODO implement mutable environment
 }
 
 /// Terminates the process normally, performing the regular cleanup.
