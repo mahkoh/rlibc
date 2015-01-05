@@ -20,8 +20,24 @@ typedef uint32_t gid_t;
 typedef unsigned long clock_t;
 typedef long time_t;
 
+#define nelem(x)        (sizeof(x)/sizeof((x)[0]))
+#define offsetof(s, m)  (size_t)(&(((s*)0)->m))
+
 /* Types */
 int isalnum(int);
+int isalpha(int);
+int isblank(int);
+int iscntrl(int);
+int isdigit(int);
+int isgraph(int);
+int islower(int);
+int isprint(int);
+int ispunct(int);
+int isspace(int);
+int isupper(int);
+int isxdigit(int);
+int tolower(int);
+int toupper(int);
 
 /* Memory */
 void *memchr(const void *, int, size_t);
