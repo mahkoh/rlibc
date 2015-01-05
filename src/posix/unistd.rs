@@ -1,5 +1,8 @@
-use types::{char_t, int_t, void_t, size_t, ssize_t, off_t, uint_t, ulong_t};
+use types::{char_t, int_t, void_t, size_t, ssize_t, uint_t, ulong_t};
+use types::{off_t};
+use types::{pid_t, uid_t, gid_t};
 use syscalls::{sys_unlink, sys_rmdir, sys_read, sys_write, sys_close, sys_lseek};
+use syscalls::{sys_getpid, sys_getuid, sys_geteuid, sys_setuid, sys_setgid, sys_setsid};
 
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 use syscalls::{sys_pread64, sys_pwrite64};
@@ -11,7 +14,7 @@ use libc::errno::{errno};
 
 macro_rules! forward {
     ($sys:ident, $($p:expr),*) => {
-        match $sys($($p),+) {
+        match $sys($($p),*) {
             n if n < 0 => {
                 errno = -n;
                 -1
@@ -20,6 +23,8 @@ macro_rules! forward {
         }
     };
 }
+
+// File and filesystem manipulation
 
 #[no_mangle]
 pub unsafe extern fn unlink(file: *const char_t) -> int_t {
@@ -81,4 +86,37 @@ pub unsafe extern fn lseek(fd: int_t, offset: off_t, whence: int_t) -> off_t {
 #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
 pub unsafe extern fn lseek(fd: int_t, offset: off_t, whence: int_t) -> off_t {
     (forward!(sys_lseek, fd, offset, whence) as off_t)
+}
+
+
+// Environment
+
+#[no_mangle]
+pub unsafe extern fn getpid() -> pid_t {
+    (forward!(sys_getpid,) as pid_t)
+}
+
+#[no_mangle]
+pub unsafe extern fn getuid() -> uid_t {
+    (forward!(sys_getuid,) as uid_t)
+}
+
+#[no_mangle]
+pub unsafe extern fn geteuid() -> uid_t {
+    (forward!(sys_geteuid,) as uid_t)
+}
+
+#[no_mangle]
+pub unsafe extern fn setuid(uid: uid_t) -> int_t {
+    forward!(sys_setuid, uid)
+}
+
+#[no_mangle]
+pub unsafe extern fn setgid(gid: gid_t) -> int_t {
+    forward!(sys_setgid, gid)
+}
+
+#[no_mangle]
+pub unsafe extern fn setsid() -> pid_t {
+    (forward!(sys_setsid,) as pid_t)
 }

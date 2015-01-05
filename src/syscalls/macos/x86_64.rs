@@ -134,13 +134,25 @@ syscall!(2, 006, sys_close, uint_t);
 
 syscall!(2, 010, sys_unlink, *const char_t);
 
+syscall!(2, 020, sys_getpid);
+
+syscall!(2, 023, sys_setuid, uid_t);
+syscall!(2, 024, sys_getuid);
+syscall!(2, 025, sys_geteuid);
+
+syscall!(2, 037, sys_kill, int_t, int_t, int_t);
+
 syscall!(2, 116, sys_gettimeofday, *mut timeval, *mut timezone);
 
 syscall!(2, 128, sys_rename, *const char_t, *const char_t);
 
 syscall!(2, 137, sys_rmdir, *const char_t);
 
+syscall!(2, 147, sys_setsid);
+
 syscall!(2, 153, sys_pread, int_t, *mut char_t, size_t, off_t);
 syscall!(2, 154, sys_pwrite, int_t, *const char_t, size_t, off_t);
+
+syscall!(2, 181, sys_setgid, gid_t);
 
 syscall!(2, 199, sys_lseek, int_t, off_t, int_t);
