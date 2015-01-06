@@ -103,10 +103,10 @@ pub extern fn exit(x: int_t) -> ! {
     _exit(x);
 }
 
+/// _Exit is a synonym for _exit
 #[no_mangle]
 pub extern fn _Exit(x: int_t) -> ! {
-    unsafe {sys_exit(x);}
-    loop { }; // for divergence check
+    _exit(x);
 }
 
 #[no_mangle]
