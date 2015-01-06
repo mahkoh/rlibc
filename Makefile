@@ -32,11 +32,14 @@ $(TARGETDIR)/libcore.rlib: libcore/lib.rs
 $(TARGETDIR)/rlibc.o: src/lib.rs $(TARGETDIR)/libcore.rlib
 	$(RUSTC) $(RUSTCFLAGS) src/lib.rs --emit obj -L $(TARGETDIR) --extern core=$(TARGETDIR)/libcore.rlib
 
+$(TARGETDIR)/crt0.o: crt/$(TARGET)/crt0.s
+	$(CLANG) $(CLANGFLAGS) -c $< -o $@
+
 $(TARGETDIR)/test.o: test.c include/rlibc/libc.h
 	$(CLANG) $(CLANGFLAGS) -c $< -o $@
 
-$(TARGETDIR)/test: $(TARGETDIR)/test.o $(TARGETDIR)/rlibc.o $(TARGETDIR)/libcore.rlib $(RUST_ROOT)/lib/rustlib/$(TARGET)/lib/libcompiler-rt.a
-	$(LD) -e _start $^ -o $@
+$(TARGETDIR)/test: $(TARGETDIR)/test.o $(TARGETDIR)/crt0.o $(TARGETDIR)/rlibc.o $(TARGETDIR)/libcore.rlib $(RUST_ROOT)/lib/rustlib/$(TARGET)/lib/libcompiler-rt.a
+	$(LD) -e start $^ -o $@
 
 run: all
 	$(TARGETDIR)/test
