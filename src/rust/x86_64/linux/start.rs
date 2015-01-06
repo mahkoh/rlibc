@@ -8,11 +8,23 @@ extern "C" {
 			envp: *const *const char_t) -> int_t;
 }
 
+/// FIXME Rust issue #20659
+#[inline(never)]
+unsafe fn call_main(argc: int_t,
+                    argv: *const *const char_t,
+                    envp: *const *const char_t,) {
+    asm!("  call main
+            mov   %rax,%rdi
+            mov   $$60,%rax
+            syscall
+            " :: "{rdi}"(argc), "{rsi}"(argv), "{rdx}"(envp));
+}
+
 /// This function is called _start to match the OS X target's name mangling.
 /// It stores the addresses of the stack arguments, invokes main(), and passes
 /// the return status to exit().
 #[no_mangle]
-pub unsafe extern fn _start() {
+pub unsafe fn _start() {
     asm!("	mov (%rsp), $0
     		lea +8(%rsp), $1"
     		: "=r"(ARGC), "=r"(ARGV) ::: "volatile");
@@ -25,7 +37,5 @@ pub unsafe extern fn _start() {
     }
     ENVC = (envc as uint - ENVP as uint - 1);
 
-    let status = main(ARGC as int_t, ARGV, ENVP);
-
-	exit(status);
+    call_main(ARGC as int_t, ARGV, ENVP);
 }
