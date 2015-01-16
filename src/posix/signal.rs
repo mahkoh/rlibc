@@ -13,7 +13,7 @@ type __sa_handler_t = fn(int_t);
 type __sa_sigaction = fn(int_t, *mut void_t, *mut void_t);
 type __sigaction_u_t = *mut void_t;
 type sigset_t = u32;
-#[repr = "C"]
+#[repr(C)]
 struct sigaction_s {
 	__sigaction_u: __sigaction_u_t,
 	sa_mask: sigset_t,

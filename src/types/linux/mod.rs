@@ -112,13 +112,13 @@ pub struct timespec {
     pub tv_nsec: long_t,
 }
 
-pub const NSIG: uint = 64;
+pub const NSIG: usize = 64;
 #[no_mangle]
-pub static _NSIG: uint = NSIG;
+pub static _NSIG: usize = NSIG;
 
-pub const NSIG_WORDS: uint = NSIG / NSIG_BPW;
+pub const NSIG_WORDS: usize = NSIG / NSIG_BPW;
 #[no_mangle]
-pub static _NSIG_WORDS: uint = NSIG_WORDS;
+pub static _NSIG_WORDS: usize = NSIG_WORDS;
 
 pub struct sigset_t {
     pub sig: [ulong_t; NSIG_WORDS],

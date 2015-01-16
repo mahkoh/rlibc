@@ -80,7 +80,7 @@ fn MONTHLEN(ly: bool, mon: int_t) -> u64 {
 		[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
 		[31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
 	];
-	_ytab[ly as uint][mon as uint]
+	_ytab[ly as usize][mon as usize]
 }
 
 /// TODO negative times
@@ -148,7 +148,7 @@ pub unsafe extern fn localtime_r(timer: *const time_t) -> *const tm {
 #[no_mangle]
 pub unsafe extern fn timegm(timer_ptr: *const tm) -> time_t {
 	let timer: &tm = transmute(timer_ptr);
-	let yr = (timer.tm_year + EPOCH_YR);
+	let yr = timer.tm_year + EPOCH_YR;
 
 	let mut t = (yr as time_t -1970) * (YEARSIZE(yr) * SECS_DAY) as time_t;
 	t += timer.tm_yday as time_t * SECS_DAY as time_t;

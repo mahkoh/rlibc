@@ -329,7 +329,7 @@ syscall!(231, sys_exit_group, int_t);
 syscall!(232, sys_epoll_wait, int_t, *mut epoll_event, int_t, int_t);
 syscall!(233, sys_epoll_ctl, int_t, int_t, int_t, *mut epoll_event);
 syscall!(234, sys_tgkill, pid_t, pid_t, int_t);
-syscall!(235, sys_utimes, *mut char_t, *mut timeval);
+syscall!(235, sys_utimes, *const char_t, *mut timeval); // WARNING *mut char_t
 // syscall!(236, sys_vserver, NOT);
 syscall!(237, sys_mbind, ulong_t, ulong_t, ulong_t, *mut ulong_t, ulong_t, uint_t);
 syscall!(238, sys_set_mempolicy, int_t, *mut ulong_t, ulong_t);

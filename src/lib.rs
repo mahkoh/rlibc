@@ -2,10 +2,10 @@
 #![crate_name="rlibc"]
 #![crate_type="staticlib"]
 #![allow(non_camel_case_types)]
-#![allow(visible_private_types)]
 #![allow(non_snake_case)]
 #![allow(dead_code)]
-#![feature(asm, globs, macro_rules, lang_items, intrinsics)]
+#![allow(unstable)]
+#![feature(asm, lang_items, intrinsics)]
 
 extern crate core;
 
@@ -17,6 +17,7 @@ pub use rust::x86_64::linux::start::__libc_start_main;
 		  all(target_os = "ios", target_arch = "x86_64")))]
 pub use rust::x86_64::macos::start::_libc_start_main;
 
+#[macro_use]
 mod rust;
 
 mod types;

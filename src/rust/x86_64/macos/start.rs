@@ -13,16 +13,16 @@ extern "C" {
 /// Also, Rust inserts the frame-pointer prelude, which is invalid
 /// for an executable's entry point.
 #[no_mangle]
-pub unsafe extern fn _libc_start_main(argc: uint, argv: *const *const char_t) {
+pub unsafe extern fn _libc_start_main(argc: usize, argv: *const *const char_t) {
     ARGC = argc;
     ARGV = argv;
-    ENVP = offset(ARGV, ARGC as int + 1);
+    ENVP = offset(ARGV, ARGC as isize + 1);
 
     let mut apple: *const *const char_t = ENVP;
-    while (*apple as uint != 0) {
+    while *apple as usize != 0 {
         apple = offset(apple, 1); // increases by one pointer size
     }
-    ENVC = (apple as uint - ENVP as uint - 1);
+    ENVC = apple as usize - ENVP as usize - 1;
     apple = offset(apple, 1); // one NULL pointer separates apple[] from env[]
     APPLE = apple;
 

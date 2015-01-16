@@ -1,3 +1,5 @@
+#![allow(unused_assignments)]
+
 use types::*;
 
 /*
@@ -24,7 +26,7 @@ use types::*;
  * call = class << 24 & class_mask | id & !class_mask
  */
 
-const CLASS_SHIFT: uint = 24;
+const CLASS_SHIFT: usize = 24;
 const CLASS_MASK: int_t = 0xFF << CLASS_SHIFT;
 const NUMBER_MASK: int_t = !CLASS_MASK;
 
@@ -142,11 +144,14 @@ syscall!(2, 025, sys_geteuid);
 
 syscall!(2, 037, sys_kill, int_t, int_t, int_t);
 
+syscall!(2, 073, sys_munmap, caddr_t, size_t);
+
 syscall!(2, 116, sys_gettimeofday, *mut timeval, *mut timezone);
 
 syscall!(2, 128, sys_rename, *const char_t, *const char_t);
 
 syscall!(2, 137, sys_rmdir, *const char_t);
+syscall!(2, 138, sys_utimes, *const char_t, *mut timeval); // WARNING *mut char_t
 
 syscall!(2, 147, sys_setsid);
 
@@ -154,5 +159,10 @@ syscall!(2, 153, sys_pread, int_t, *mut char_t, size_t, off_t);
 syscall!(2, 154, sys_pwrite, int_t, *const char_t, size_t, off_t);
 
 syscall!(2, 181, sys_setgid, gid_t);
+
+syscall!(2, 193, sys_getrlimit, uint_t, *mut rlimit);
+syscall!(2, 194, sys_setrlimit, uint_t, *mut rlimit);
+
+syscall!(2, 197, sys_mmap, caddr_t, size_t, int_t, int_t, int_t, off_t);
 
 syscall!(2, 199, sys_lseek, int_t, off_t, int_t);

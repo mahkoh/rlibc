@@ -12,16 +12,16 @@ extern "C" {
 /// It stores the addresses of the stack arguments, invokes main(), and passes
 /// the return status to exit().
 #[no_mangle]
-pub unsafe extern fn __libc_start_main(argc: uint, argv: *const *const char_t) {
+pub unsafe extern fn __libc_start_main(argc: usize, argv: *const *const char_t) {
     ARGC = argc;
     ARGV = argv;
-    ENVP = offset(ARGV, ARGC as int + 1);
+    ENVP = offset(ARGV, ARGC as isize + 1);
 
     let mut envc: *const *const char_t = ENVP;
-    while (*envc as uint != 0) {
+    while *envc as usize != 0 {
         envc = offset(envc, 1); // increases by one pointer size
     }
-    ENVC = (envc as uint - ENVP as uint - 1);
+    ENVC = envc as usize - ENVP as usize - 1;
 
-    call_main(ARGC as int_t, ARGV, ENVP);
+    exit(main(ARGC as int_t, ARGV, ENVP));
 }

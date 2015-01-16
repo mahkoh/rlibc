@@ -1,5 +1,3 @@
-#![macro_escape]
-
 #[macro_export]
 macro_rules! cc {
     ($e:expr) => {
