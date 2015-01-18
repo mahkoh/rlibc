@@ -32,7 +32,8 @@ macro_rules! forward {
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 #[no_mangle]
 pub unsafe extern fn brk(addr: *const void_t) -> int_t {
-    match sys_brk(addr as ulong_t) == 0 {
+    let oldbrk = sys_brk(0) as usize;
+    match sys_brk(addr as ulong_t) as usize != oldbrk {
         true => 0,
         false => {
             errno = ENOMEM;
@@ -46,10 +47,10 @@ pub unsafe extern fn brk(addr: *const void_t) -> int_t {
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 #[no_mangle]
 pub unsafe extern fn sbrk(increment: intptr_t) -> *const void_t {
-    let oldbrk: *const void_t = sys_brk(0) as *const void_t;
+    let oldbrk = sys_brk(0) as *const u8;
     if increment != 0 {
-        let newbrk: *const void_t = offset(oldbrk, increment as isize);
-        if sys_brk(newbrk as ulong_t) as *const void_t != newbrk {
+        let newbrk = offset(oldbrk, increment as isize);
+        if sys_brk(newbrk as ulong_t) as *const u8 != newbrk {
             errno = ENOMEM;
             -1 as *const void_t
         } else {

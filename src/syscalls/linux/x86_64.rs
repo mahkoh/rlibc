@@ -1,3 +1,5 @@
+#![allow(unused_assignments)]
+
 use types::*;
 
 macro_rules! syscall {

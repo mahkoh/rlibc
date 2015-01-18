@@ -11,6 +11,8 @@ typedef signed int int32_t;
 typedef unsigned int uint32_t;
 typedef signed long int64_t;
 typedef unsigned long uint64_t;
+typedef int64_t intptr_t;
+typedef uint64_t uintptr_t;
 typedef uint64_t size_t;
 typedef int64_t ssize_t;
 typedef int64_t off_t;
@@ -71,6 +73,13 @@ int remove(const char *);
 int rename(const char *, const char *);
 int rmdir(const char*);
 int unlink(const char *);
+int utime(const char *, void *);
+
+/* Memory Management */
+void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+int munmap(void *addr, size_t length);
+int brk(void *);
+void *sbrk(intptr_t);
 
 /* Environment */
 extern int errno;
