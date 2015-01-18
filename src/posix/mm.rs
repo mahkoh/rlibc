@@ -15,18 +15,6 @@ use rust::prelude::*;
 use consts::errno::{ENOMEM};
 use libc::errno::{errno};
 
-macro_rules! forward {
-    ($sys:ident, $($p:expr),*) => {
-        match $sys($($p),*) {
-            n if n < 0 => {
-                errno = -n;
-                -1
-            },
-            n => n,
-        }
-    };
-}
-
 /// Increases the data break to the given address, returning 0 on success
 /// or -1 on failure, setting errno to ENOMEM.
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
@@ -54,10 +42,10 @@ pub unsafe extern fn sbrk(increment: intptr_t) -> *const void_t {
             errno = ENOMEM;
             -1 as *const void_t
         } else {
-            oldbrk
+            oldbrk as *const void_t
         }
     } else {
-        oldbrk
+        oldbrk as *const void_t
     }
 }
 

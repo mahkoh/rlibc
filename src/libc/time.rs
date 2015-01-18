@@ -3,19 +3,6 @@ use consts::NULL;
 use types::{int_t, char_t, long_t, time_t, tm, timeval, timezone};
 use syscalls::sys_gettimeofday;
 
-use libc::errno::{errno};
-macro_rules! forward {
-    ($sys:ident, $($p:expr),*) => {
-        match $sys($($p),+) {
-            n if n < 0 => {
-                errno = -n;
-                -1
-            },
-            n => n,
-        }
-    };
-}
-
 #[no_mangle]
 pub unsafe extern fn time(time: *mut time_t) -> time_t {
 	let mut now: timeval = timeval {tv_sec: 0xabcd, tv_usec: 0xabcd};
