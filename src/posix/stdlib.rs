@@ -9,13 +9,13 @@ use posix::signal::{raise, SIGABRT};
 
 use syscalls::{sys_exit};
 
-pub static mut ARGV: *const *const char_t = 0u as *const *const char_t;
-pub static mut ARGC: uint = 0;
-pub static mut ENVP: *const *const char_t = 0u as *const *const char_t;
-pub static mut ENVC: uint = 0;
+pub static mut ARGV: *const *const char_t = 0us as *const *const char_t;
+pub static mut ARGC: usize = 0;
+pub static mut ENVP: *const *const char_t = 0us as *const *const char_t;
+pub static mut ENVC: usize = 0;
 
 #[cfg(target_os = "macos")]
-pub static mut APPLE: *const *const char_t = 0u as *const *const char_t;
+pub static mut APPLE: *const *const char_t = 0us as *const *const char_t;
 
 const K_ENV_MAXKEYLEN: size_t = 512;
 
@@ -38,7 +38,7 @@ pub unsafe extern fn get_envp() -> &'static [*const char_t] {
 #[no_mangle]
 #[cfg(target_os = "macos")]
 pub unsafe extern fn _NSGetArgc() -> *const int_t {
-    (&ARGC) as *const uint as *const int_t
+    (&ARGC) as *const usize as *const int_t
 }
 
 #[no_mangle]
@@ -76,8 +76,8 @@ pub unsafe extern fn _NSGetExecutablePath(buf: *mut char_t, size: *mut u32) -> i
 pub unsafe extern fn getenv(key: *const char_t) -> *const char_t {
     let len = strnlen(key, K_ENV_MAXKEYLEN);
     for &env in get_envp().iter() {
-        if strncmp(key, env, len) == 0 && *offset(env, len as int) == '=' as i8 {
-            return offset(env, (len as int) + 1)
+        if strncmp(key, env, len) == 0 && *offset(env, len as isize) == '=' as i8 {
+            return offset(env, (len as isize) + 1)
         }
     }
     0 as *const char_t
@@ -123,7 +123,7 @@ pub unsafe extern fn abort() {
 /*
 #[no_mangle]
 pub unsafe extern fn mkstemp(tplt: *mut char_t) -> int_t {
-    let slc = tplt.to_mut_slice(strlen(tplt as *_) as uint);
+    let slc = tplt.to_mut_slice(strlen(tplt as *_) as usize);
     if slc.len() < 6 || slc.lastn(6).iter().any(|c| *c != cc!('X')) {
         errno = EINVAL;
         return -1;

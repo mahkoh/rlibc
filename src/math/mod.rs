@@ -1290,7 +1290,7 @@ pub fn gauss(x: f64) -> f64
 
 	match i {
 		11...150	=> M_1_SQRT2PI * exp(-0.5*y) / x * __poly(1./y, 7, tab3),
-		1 ... 10	=> -__poly((x - i as f64), 31, &tab2[i as uint-1]),
+		1 ... 10	=> -__poly((x - i as f64), 31, &tab2[i as usize-1]),
 		0	=> 0.5 - x * __poly(y, 9, tab1),
 		_	=> 0.,
 	}

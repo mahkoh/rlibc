@@ -54,9 +54,9 @@ pub type __kernel_size_t    = ulong_t;
 pub type __kernel_ssize_t   = long_t;
 pub type __kernel_ptrdiff_t = long_t;
 
-pub const NSIG_BPW: uint = 64;
+pub const NSIG_BPW: usize = 64;
 #[no_mangle]
-pub static _NSIG_BPW: uint = NSIG_BPW;
+pub static _NSIG_BPW: usize = NSIG_BPW;
 
 #[packed]
 pub struct epoll_event {
@@ -156,10 +156,10 @@ pub struct msg {
 
 pub type __statfs_word = long_t;
 
-pub const FD_SETSIZE: uint = 1024;
+pub const FD_SETSIZE: usize = 1024;
 
 #[no_mangle]
-pub static __FD_SETSIZE: uint = FD_SETSIZE;
+pub static __FD_SETSIZE: usize = FD_SETSIZE;
 pub struct __kernel_fd_set {
     // XXX size_of
     pub fds_bits: [ulong_t; (FD_SETSIZE / (8 * 8))],

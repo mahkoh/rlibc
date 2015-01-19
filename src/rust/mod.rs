@@ -1,5 +1,6 @@
-#![macro_escape]
+//! The Rust core prelude.
 
+#[macro_use]
 pub mod macros;
 
 #[cfg(target_arch = "x86_64")]
@@ -14,13 +15,14 @@ pub mod prelude {
     pub use core::raw::{Repr};
     pub use core::intrinsics::{offset, uninit, copy_nonoverlapping_memory};
     pub use core::ops::*;
+    pub use core::ptr::{PtrExt};
     pub use core::clone::{Clone};
     pub use core::num::{Int, Float};
     pub use core::mem::transmute;
     pub use super::rand::{Rand, os_rand};
 
     #[inline(always)]
-    pub unsafe fn offset_mut<T>(dst: *mut T, n: int) -> *mut T {
+    pub unsafe fn offset_mut<T>(dst: *mut T, n: isize) -> *mut T {
         offset(dst as *const T, n) as *mut T
     }
 

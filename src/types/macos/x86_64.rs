@@ -100,11 +100,22 @@ pub struct timezone {
     pub tz_dsttime: int_t,
 }
 #[repr(C)]
+pub struct utimbuf {
+    pub actime: time_t,
+    pub modtime: time_t,
+}
+#[repr(C)]
 pub struct fd_set {
-    pub fds_bits: [int32_t; 32u],
+    pub fds_bits: [int32_t; 32us],
+}
+#[repr(C)]
+pub struct rlimit {
+    pub rlim_cur: ulong_t,
+    pub rlim_max: ulong_t,
 }
 
 // kernel
 pub type user_addr_t = u64;
 pub type user_size_t = u64;
 pub type user_ssize_t = i64;
+pub type caddr_t = *const char_t;
