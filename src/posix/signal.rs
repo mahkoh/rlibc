@@ -1,8 +1,7 @@
-use rust::prelude::*;
 use types::{int_t, void_t, pid_t};
 use syscalls::{sys_kill,};
 use libc::errno::errno;
-use posix::stdlib::{_exit,};
+use posix::pm::{_exit,};
 use posix::unistd::{getpid,};
 
 pub use self::Signals::*;
@@ -79,8 +78,8 @@ pub unsafe extern fn raise(sig: int_t) -> int_t {
 /// Set function to handle signal.
 /// Specifies a way to handle the signals with the signal number specified by sig.
 #[no_mangle]
-pub unsafe extern fn signal(sig: int_t,
-							func: sighandler_t) -> sighandler_t {
+pub unsafe extern fn signal(_sig: int_t,
+							_func: sighandler_t) -> sighandler_t {
 	_exit(1); // TODO implement signal attachment
 }
 

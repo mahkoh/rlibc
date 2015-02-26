@@ -9,7 +9,7 @@ pub mod x86_64;
 pub mod rand;
 
 pub mod prelude {
-    pub use core::slice::{SliceExt, from_raw_buf};
+    pub use core::slice::{SliceExt, from_raw_parts};
     pub use core::iter::{Iterator, IteratorExt, Zip, range, count, DoubleEndedIterator};
     pub use core::option::Option::{self, Some, None};
     pub use core::raw::{Repr};
@@ -32,4 +32,22 @@ pub mod prelude {
         copy_nonoverlapping_memory(&mut u, p, 1);
         u
     }
+}
+
+use core;
+
+#[lang = "stack_exhausted"]
+unsafe fn stack_exhausted() {
+    ::syscalls::sys_exit(1);
+}
+#[lang = "eh_personality"]
+unsafe fn eh_personality() {
+    ::syscalls::sys_exit(1);
+}
+#[lang = "panic_fmt"]
+unsafe fn panic_fmt(_args: &core::fmt::Arguments,
+                    _file: &str,
+                    _line: u32) -> ! {
+    ::syscalls::sys_exit(1);
+    loop { };
 }

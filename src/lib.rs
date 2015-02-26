@@ -1,11 +1,10 @@
-#![no_std]
 #![crate_name="rlibc"]
 #![crate_type="staticlib"]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 #![allow(dead_code)]
-#![allow(unstable)]
-#![feature(asm, lang_items, intrinsics)]
+#![feature(asm, lang_items, intrinsics, no_std, core)]
+#![no_std]
 
 extern crate core;
 
@@ -27,16 +26,3 @@ pub mod libc;
 pub mod posix;
 pub mod math;
 pub mod syscalls;
-
-// WARNING hacks
-#[lang = "stack_exhausted"] extern fn stack_exhausted() {
-	unsafe {syscalls::sys_exit(1);}
-}
-#[lang = "eh_personality"] extern fn eh_personality() {
-	unsafe {syscalls::sys_exit(1);}
-}
-#[lang = "panic_fmt"]
-unsafe fn panic_fmt() -> ! {
-	syscalls::sys_exit(1);
-	loop { };
-}

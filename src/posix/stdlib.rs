@@ -2,37 +2,34 @@ use rust::prelude::*;
 use types::{char_t, int_t, size_t};
 use libc::string::{strlen, strncpy, strnlen, strncmp};
 use libc::errno::{errno};
-use consts::NULL;
+// use consts::NULL;
 use consts::errno::{EINVAL, EEXIST};
-use posix::fcntl::{open};
-use posix::signal::{raise, SIGABRT};
+use posix::pm::{_exit};
 
-use syscalls::{sys_exit};
-
-pub static mut ARGV: *const *const char_t = 0us as *const *const char_t;
+pub static mut ARGV: *const *const char_t = 0 as *const *const char_t;
 pub static mut ARGC: usize = 0;
-pub static mut ENVP: *const *const char_t = 0us as *const *const char_t;
+pub static mut ENVP: *const *const char_t = 0 as *const *const char_t;
 pub static mut ENVC: usize = 0;
 
 #[cfg(target_os = "macos")]
-pub static mut APPLE: *const *const char_t = 0us as *const *const char_t;
+pub static mut APPLE: *const *const char_t = 0 as *const *const char_t;
 
 const K_ENV_MAXKEYLEN: size_t = 512;
 
 #[no_mangle]
 pub unsafe extern fn get_argv() -> &'static [*const char_t] {
-    transmute(from_raw_buf(
-        &ARGV,
+    from_raw_parts(
+        ARGV,
         ARGC
-    ))
+    )
 }
 
 #[no_mangle]
 pub unsafe extern fn get_envp() -> &'static [*const char_t] {
-    transmute(from_raw_buf(
-        &ENVP,
+    from_raw_parts(
+        ENVP,
         ENVC
-    ))
+    )
 }
 
 #[no_mangle]
@@ -93,31 +90,6 @@ pub unsafe extern fn setenv(key: *const char_t,
 #[no_mangle]
 pub unsafe extern fn unsetenv(key: *const char_t) -> int_t {
     _exit(1); // TODO implement mutable environment
-}
-
-/// Terminates the process normally, performing the regular cleanup.
-/// All C streams are closed, and all files created with tmpfile are removed.
-/// Status can be zero or EXIT_SUCCESS, or EXIT_FAILURE.
-#[no_mangle]
-pub extern fn exit(x: int_t) -> ! {
-    _exit(x);
-}
-
-/// _Exit is a synonym for _exit
-#[no_mangle]
-pub extern fn _Exit(x: int_t) -> ! {
-    _exit(x);
-}
-
-#[no_mangle]
-pub extern fn _exit(x: int_t) -> ! {
-    unsafe {sys_exit(x);}
-    loop { }; // for divergence check
-}
-
-#[no_mangle]
-pub unsafe extern fn abort() {
-    raise(SIGABRT);
 }
 
 /*

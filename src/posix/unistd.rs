@@ -1,4 +1,4 @@
-use types::{char_t, int_t, void_t, size_t, ssize_t, uint_t, ulong_t};
+use types::{char_t, int_t, void_t, size_t, ssize_t, uint_t};
 use types::{off_t};
 use types::{pid_t, uid_t, gid_t};
 use syscalls::{sys_unlink, sys_rmdir, sys_read, sys_write, sys_close, sys_lseek};
