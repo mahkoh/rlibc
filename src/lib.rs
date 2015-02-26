@@ -1,4 +1,4 @@
-#![crate_name="rlibc"]
+#![crate_name="c"]
 #![crate_type="staticlib"]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]

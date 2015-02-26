@@ -2,6 +2,7 @@
 /// #include "libc.h"
 
 #pragma once
+#pragma lib "libc.a"
 
 typedef signed char int8_t;
 typedef unsigned char uint8_t;
