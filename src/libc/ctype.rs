@@ -30,8 +30,9 @@ pub extern fn isblank(c: int_t) -> int_t {
 #[no_mangle]
 pub extern fn iscntrl(c: int_t) -> int_t {
     match c as u8 as char {
-        '\x07'...'\r' => 1,
-        _            => 0,
+        '\x00'...'\x19' => 1,
+        '\x7f'      => 1,
+        _           => 0,
     }
 }
 
@@ -69,17 +70,13 @@ pub extern fn isprint(c: int_t) -> int_t {
 
 #[no_mangle]
 pub extern fn ispunct(c: int_t) -> int_t {
-    match isspace(c) + isalnum(c) {
-        0 => 1,
-        _ => 0,
-    }
+    ((isgraph(c) != 0) && (isalpha(c) == 0)) as int_t
 }
 
 #[no_mangle]
 pub extern fn isspace(c: int_t) -> int_t {
-    match c {
-        0x09...0x0d => 1,
-        0x20       => 1,
+    match c as u8 as char {
+        ' '|'\t'|'\n'|'\x0b'|'\x0c'|'\r'    => 1,
         _          => 0,
     }
 }
