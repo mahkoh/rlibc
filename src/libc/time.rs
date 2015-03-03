@@ -150,9 +150,11 @@ pub unsafe extern fn mktime(timer_ptr: *const tm) -> time_t {
 }
 
 #[no_mangle]
-static mut tzname: [*mut char_t; 2] = [0 as *mut char_t, 0 as *mut char_t];
-static mut timezone: long_t = 0;
-static mut daylight: int_t = 0;
+pub static mut tzname: [*mut char_t; 2] = [0 as *mut char_t, 0 as *mut char_t];
+#[no_mangle]
+pub static mut timezone: long_t = 0;
+#[no_mangle]
+pub static mut daylight: int_t = 0;
 
 /// TODO time localization
 #[no_mangle]

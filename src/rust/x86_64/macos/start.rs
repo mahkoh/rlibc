@@ -1,6 +1,7 @@
 use rust::prelude::*;
 use types::{int_t, char_t};
-use posix::stdlib::{ARGV, ARGC, ENVP, ENVC, APPLE, exit};
+use posix::pm::exit;
+use posix::stdlib::{ARGV, ARGC, ENVP, ENVC, APPLE};
 
 extern "C" {
     fn main(argc: int_t,

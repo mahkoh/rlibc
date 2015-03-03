@@ -106,7 +106,7 @@ pub struct utimbuf {
 }
 #[repr(C)]
 pub struct fd_set {
-    pub fds_bits: [int32_t; 32us],
+    pub fds_bits: [int32_t; 32usize],
 }
 #[repr(C)]
 pub struct rlimit {

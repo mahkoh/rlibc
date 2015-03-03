@@ -91,7 +91,7 @@ pub unsafe extern fn memcmp(m1: *const char_t, m2: *const char_t, n: size_t) -> 
 pub unsafe extern fn strcmp(m1: *const char_t, m2: *const char_t) -> int_t {
     let m1 = m1 as *const uchar_t;
     let m2 = m2 as *const uchar_t;
-    for i in count(0is, 1) {
+    for i in count(0, 1) {
         let v1 = *offset(m1, i) as isize;
         let v2 = *offset(m2, i) as isize;
         match v1 - v2 {

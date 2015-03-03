@@ -9,7 +9,8 @@ BINUTILS_ROOT  ?= /usr
 BDIR			= target
 TARGETDIR       = $(BDIR)/$(TARGET)
 
-LD				= $(BINUTILS_ROOT)/bin/ld
+AR				= $(BINUTILS_ROOT)/bin/ar
+LD				= $(BINUTILS_ROOT)/bin/ld -dead_strip
 CLANG			= $(LLVM_ROOT)/bin/clang
 RUSTC           = $(RUST_ROOT)/bin/rustc
 
@@ -29,8 +30,11 @@ directories:
 $(TARGETDIR)/libcore.rlib: libcore/lib.rs
 	$(RUSTC) $(RUSTCFLAGS) $<
 
-$(TARGETDIR)/rlibc.o: src/lib.rs $(TARGETDIR)/libcore.rlib
+$(TARGETDIR)/c.o: src/lib.rs $(TARGETDIR)/libcore.rlib
 	$(RUSTC) $(RUSTCFLAGS) src/lib.rs --emit obj -L $(TARGETDIR) --extern core=$(TARGETDIR)/libcore.rlib
+
+$(TARGETDIR)/libc.a: $(TARGETDIR)/c.o
+	$(AR) rcs $@ $<
 
 $(TARGETDIR)/crt0.o: crt/$(TARGET)/crt0.s
 	$(CLANG) $(CLANGFLAGS) -c $< -o $@
@@ -38,7 +42,7 @@ $(TARGETDIR)/crt0.o: crt/$(TARGET)/crt0.s
 $(TARGETDIR)/test.o: test.c include/rlibc/libc.h
 	$(CLANG) $(CLANGFLAGS) -c $< -o $@
 
-$(TARGETDIR)/test: $(TARGETDIR)/test.o $(TARGETDIR)/crt0.o $(TARGETDIR)/rlibc.o $(TARGETDIR)/libcore.rlib $(RUST_ROOT)/lib/rustlib/$(TARGET)/lib/libcompiler-rt.a
+$(TARGETDIR)/test: $(TARGETDIR)/crt0.o $(TARGETDIR)/test.o $(TARGETDIR)/libc.a $(TARGETDIR)/libcore.rlib $(RUST_ROOT)/lib/rustlib/$(TARGET)/lib/libcompiler-rt.a
 	$(LD) -e start $^ -o $@
 
 run: all

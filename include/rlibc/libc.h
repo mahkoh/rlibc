@@ -2,6 +2,7 @@
 /// #include "libc.h"
 
 #pragma once
+#pragma lib "libc.a"
 
 typedef signed char int8_t;
 typedef unsigned char uint8_t;
@@ -63,6 +64,34 @@ size_t strlen(const char *);
 int puts(const char *);
 
 /* Filesystem */
+typedef struct FILE FILE;
+
+extern FILE __stdin;
+extern FILE __stdout;
+extern FILE __stderr;
+
+#define stdin  &__stdin
+#define stdout &__stdout
+#define stderr &__stderr
+
+#define _IOFBF 0
+#define _IOLBF 1
+#define _IONBF 2
+
+#define BUFSIZ 8192
+
+#define EOF (-1)
+
+#define FOPEN_MAX 16
+#define FILENAME_MAX 4096
+#define L_tmpnam 20
+
+#define SEEK_SET 0
+#define SEEK_CUR 1
+#define SEEK_END 2
+
+#define TMP_MAX 238328
+
 int close(int);
 ssize_t read(int, void *, size_t);
 ssize_t write(int, const void *, size_t);
@@ -74,6 +103,12 @@ int rename(const char *, const char *);
 int rmdir(const char*);
 int unlink(const char *);
 int utime(const char *, void *);
+
+/* Process Management */
+void exit(int);
+void _exit(int);
+void abort(void);
+int atexit(void (*)(void));
 
 /* Memory Management */
 void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
